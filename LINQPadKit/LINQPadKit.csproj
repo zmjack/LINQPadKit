@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>
+      net6.0;net7.0;
+    </TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <RootNamespace>LINQPadKit</RootNamespace>
+    <Authors>zmjack</Authors>
+    <Company>nstandard.net</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1.0-preview</Version>
+    <Description>Extension Toolkit for LINQPad.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
+    <PackageProjectUrl>nstandard.net</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <Copyright>Copyright © nstandard.net 2023</Copyright>
+    <LangVersion>preview</LangVersion>
+    <PackageId>LINQPadKit</PackageId>
+    <PackageTags>LINQPad ToolKit Extension</PackageTags>
+    <PackageIconUrl />
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LINQPad.Runtime" Version="7.6.6" />
+    <PackageReference Include="NStandard" Version="0.24.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+  
+</Project>
