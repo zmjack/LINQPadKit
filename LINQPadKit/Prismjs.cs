@@ -10,25 +10,31 @@ namespace LINQPadKit
     {
         private static readonly string PrismjsVersion = "1.29.0";
 
+        public static bool Imported { get; private set; }
+
         /// <summary>
         /// Load scripts of Prismjs.
         /// </summary>
-        public static void Script()
+        public static void Import()
         {
-            // https://cdnjs.com/libraries/prism
-            Util.HtmlHead.AddCssLink($"https://cdnjs.cloudflare.com/ajax/libs/prism/{PrismjsVersion}/themes/prism.min.css");
-            Util.HtmlHead.AddScriptFromUri($"https://cdnjs.cloudflare.com/ajax/libs/prism/{PrismjsVersion}/prism.min.js");
+            if (!Imported)
+            {
+                // https://cdnjs.com/libraries/prism
+                Util.HtmlHead.AddCssLink($"https://cdnjs.cloudflare.com/ajax/libs/prism/{PrismjsVersion}/themes/prism.min.css");
+                Util.HtmlHead.AddScriptFromUri($"https://cdnjs.cloudflare.com/ajax/libs/prism/{PrismjsVersion}/prism.min.js");
 
-            Util.HtmlHead.AddScript($@"
+                Util.HtmlHead.AddScript($@"
 window.highlight = function highlight(language, code) {{
     return Prism.highlight(code, Prism.languages[language], language);
 }}");
 
-            Util.HtmlHead.AddStyles(@"
+                Util.HtmlHead.AddStyles(@"
 .code {
 	font-family: 'Consolas';
 	white-space: pre-wrap;
 }");
+                Imported = true;
+            }
         }
 
         /// <summary>
