@@ -1,4 +1,5 @@
 ﻿using LINQPad.Controls;
+using LINQPadKit.Internal;
 using NStandard;
 using System.ComponentModel;
 
@@ -7,7 +8,7 @@ namespace LINQPadKit
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class SpanExtensions
     {
-        private static readonly Dictionary<StructTuple<Span, IState>, State.UpdatingHandler> _handlerMap = new();
+        private static readonly Dictionary<StructTuple<Span, IState>, StateHandler> _handlerMap = new();
 
         public static Span Bind(this Span @this, IState state)
         {
@@ -15,14 +16,19 @@ namespace LINQPadKit
 
             if (!_handlerMap.ContainsKey(key))
             {
-                var updating = new State.UpdatingHandler(value =>
+                var received = new State.ValueReceivedHandler<object>(value =>
                 {
                     @this.Text = state.Value?.ToString();
                 });
 
-                state.Updating += updating;
+                state.Changed += received;
+                state.Updating += received;
 
-                _handlerMap.Add(key, updating);
+                _handlerMap.Add(key, new StateHandler
+                {
+                    Changed = received,
+                    Updating = received,
+                });
             }
 
             @this.Text = state.Value?.ToString();
@@ -33,10 +39,10 @@ namespace LINQPadKit
         {
             var key = StructTuple.Create(@this, state);
 
-            if (_handlerMap.ContainsKey(key))
+            if (_handlerMap.TryGetValue(key, out var handler))
             {
-                var updating = _handlerMap[key];
-                state.Updating -= updating;
+                state.Changed -= handler.Changed;
+                state.Updating += handler.Updating;
             }
 
             return @this;

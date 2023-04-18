@@ -11,7 +11,7 @@
     <Authors>zmjack</Authors>
     <Company>nstandard.net</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.2-preview</Version>
+    <Version>0.1.3-preview</Version>
     <Description>Extension Toolkit for LINQPad.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="LINQPad.Runtime" Version="7.6.6" />
-    <PackageReference Include="NStandard" Version="0.24.0" />
+    <PackageReference Include="NStandard" Version="0.27.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,5 +36,5 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-  
+
 </Project>

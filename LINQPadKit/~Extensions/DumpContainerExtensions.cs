@@ -1,4 +1,5 @@
 ﻿using LINQPad;
+using LINQPadKit.Internal;
 using NStandard;
 using System.ComponentModel;
 
@@ -7,7 +8,7 @@ namespace LINQPadKit
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class DumpContainerExtensions
     {
-        private static readonly Dictionary<StructTuple<DumpContainer, IState>, State.UpdatingHandler> _handlerMap = new();
+        private static readonly Dictionary<StructTuple<DumpContainer, IState>, StateHandler> _handlerMap = new();
 
         public static DumpContainer Bind(this DumpContainer @this, IState state)
         {
@@ -15,14 +16,18 @@ namespace LINQPadKit
 
             if (!_handlerMap.ContainsKey(key))
             {
-                var updating = new State.UpdatingHandler(value =>
+                var received = new State.ValueReceivedHandler<object>(value =>
                 {
                     @this.Refresh();
                 });
 
-                state.Updating += updating;
-
-                _handlerMap.Add(key, updating);
+                state.Changed += received;
+                state.Updating += received;
+                _handlerMap.Add(key, new StateHandler
+                {
+                    Changed = received,
+                    Updating = received,
+                });
             }
 
             @this.Content = state.Value;
@@ -33,10 +38,10 @@ namespace LINQPadKit
         {
             var key = StructTuple.Create(@this, state);
 
-            if (_handlerMap.ContainsKey(key))
+            if (_handlerMap.TryGetValue(key, out var handler))
             {
-                var updating = _handlerMap[key];
-                state.Updating -= updating;
+                state.Changed -= handler.Changed;
+                state.Updating -= handler.Updating;
             }
 
             return @this;
