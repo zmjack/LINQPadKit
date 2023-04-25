@@ -221,7 +221,7 @@ var TreeGraph = /** @class */ (function () {
 
         public TreeGraph(ITreeGraphNode node)
         {
-            var nodeJson = System.Text.Json.JsonSerializer.Serialize(node, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var nodeJson = JsonSerializer.Serialize(node, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             HtmlElement.InvokeScript(false, "eval",
 $"""
 TreeGraph.render(document.getElementById('{HtmlElement.ID}'), {nodeJson});

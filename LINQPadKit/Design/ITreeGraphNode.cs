@@ -1,6 +1,6 @@
 ﻿namespace LINQPadKit.Design
 {
-    public class ITreeGraphNode
+    public interface ITreeGraphNode
     {
         string Text { get; }
         ITreeGraphNode[] Children { get; }
