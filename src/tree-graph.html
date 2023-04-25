@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="tree-graph.js"></script>
+
+    <style>
+        .tree-graph {
+            position: relative;
+	        margin: 8px;
+        }
+
+        .tree-graph-node {
+            position: absolute;
+            box-sizing: border-box;
+            border: 1px solid orange;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="border: 1px solid red;">
+        <div id="graph"></div>
+    </div>
+
+    <script>
+        var node = {
+            text: 'a',
+            children: [{
+                text: 'b',
+                children: [{
+                    text: 'c',
+                }, {
+                    text: 'd',
+                }, {
+                    text: 'e',
+                }]
+            }, {
+                text: 'f',
+                children: [{
+                    text: 'g',
+                    children: [{
+                        text: 'h'
+                    }]
+                }, {
+                    text: 'i',
+                }]
+            }],
+        }
+        TreeGraph.render(document.getElementById('graph'), node);
+    </script>
+</body>
+
+</html>
