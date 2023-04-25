@@ -80,12 +80,6 @@ class TreeGraph {
         this.draw_node(node, 0, 0);
     }
 
-    private nullNode: TreeNode = {
-        text: 'null',
-        children: undefined,
-        isNullNode: true,
-    };
-
     private draw_node(node: TreeNode, level: number, left: number) {
         let div = document.createElement('div');
         if (node.isNullNode) {
@@ -102,9 +96,14 @@ class TreeGraph {
 
         node.children = node.children?.map(x => {
             if (x != undefined) return x;
-            else return this.nullNode;
+            else {
+                let nullNode = new TreeNode();
+                nullNode.text = 'null';
+                nullNode.isNullNode = true;
+                return nullNode;
+            };
         });
-        
+
         if (node.children != undefined && node.children.length > 0) {
             for (let key in node.children) {
                 let index = parseInt(key);

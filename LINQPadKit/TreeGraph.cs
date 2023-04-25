@@ -69,11 +69,6 @@ var TreeGraph = /** @class */ (function () {
         this.element = element;
         this.marginlr = marginlr;
         this.levelHeight = levelHeight;
-        this.nullNode = {
-            text: 'null',
-            children: undefined,
-            isNullNode: true,
-        };
         var el_nodes = element.getElementsByClassName(TreeGraph.NodesDivClassName);
         if (el_nodes.length == 0)
             throw "The ".concat(TreeGraph.NodesDivClassName, " div is required.");
@@ -143,8 +138,13 @@ var TreeGraph = /** @class */ (function () {
         node.children = (_a = node.children) === null || _a === void 0 ? void 0 : _a.map(function (x) {
             if (x != undefined)
                 return x;
-            else
-                return _this.nullNode;
+            else {
+                var nullNode = new TreeNode();
+                nullNode.text = 'null';
+                nullNode.isNullNode = true;
+                return nullNode;
+            }
+            ;
         });
         if (node.children != undefined && node.children.length > 0) {
             for (var key in node.children) {
