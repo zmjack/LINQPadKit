@@ -13,6 +13,11 @@ var TreeGraph = /** @class */ (function () {
         this.element = element;
         this.marginlr = marginlr;
         this.levelHeight = levelHeight;
+        this.nullNode = {
+            text: 'null',
+            children: undefined,
+            isNullNode: true,
+        };
         var el_nodes = element.getElementsByClassName(TreeGraph.NodesDivClassName);
         if (el_nodes.length == 0)
             throw "The ".concat(TreeGraph.NodesDivClassName, " div is required.");
@@ -66,15 +71,29 @@ var TreeGraph = /** @class */ (function () {
     };
     TreeGraph.prototype.draw_node = function (node, level, left) {
         var _this = this;
-        var _a;
+        var _a, _b;
         var div = document.createElement('div');
-        div.className = TreeGraph.NodeClassName;
-        div.innerText = node.text;
+        if (node.isNullNode) {
+            div.className = TreeGraph.NullNodeClassName;
+            div.innerText = 'null';
+        }
+        else {
+            div.className = TreeGraph.NodeClassName;
+            div.innerText = node.text;
+        }
         node._element = div;
         this.element_nodes.appendChild(node._element);
         node._element.style['top'] = "".concat(level * this.levelHeight, "px");
-        node.children = (_a = node.children) === null || _a === void 0 ? void 0 : _a.filter(function (x) { return x != null; });
-        if (node.children != null && node.children.length > 0) {
+        node.children = (_a = node.children) === null || _a === void 0 ? void 0 : _a.map(function (x) {
+            if (x != undefined)
+                return x;
+            else
+                return _this.nullNode;
+        });
+        if ((_b = node.children) === null || _b === void 0 ? void 0 : _b.some(function (x) { return x == _this.nullNode; })) {
+            console.log(node);
+        }
+        if (node.children != undefined && node.children.length > 0) {
             for (var key in node.children) {
                 var index = parseInt(key);
                 var child = node.children[index];
@@ -88,8 +107,9 @@ var TreeGraph = /** @class */ (function () {
             node._area_height = Math.max.apply(Math, node.children.map(function (x) { return x._area_height; })) + this.levelHeight;
             var firstChild = node.children[0];
             var lastChild = node.children[node.children.length - 1];
-            var chilren_width = lastChild._element.offsetLeft + lastChild._element.offsetWidth - firstChild._element.offsetLeft;
-            var offsetLeft = firstChild._element.offsetLeft + (chilren_width - node._element.offsetWidth) / 2;
+            var firstChild_center = (firstChild._element.offsetLeft + firstChild._element.offsetWidth / 2);
+            var lastChild_center = (lastChild._element.offsetLeft + lastChild._element.offsetWidth / 2);
+            var offsetLeft = firstChild_center + ((lastChild_center - firstChild_center) - node._element.offsetWidth) / 2;
             node._element.style['left'] = "".concat(offsetLeft, "px");
             if (offsetLeft < left) {
                 this.offset_x(node, left - offsetLeft);
@@ -155,5 +175,6 @@ var TreeGraph = /** @class */ (function () {
     };
     TreeGraph.NodesDivClassName = 'tree-graph-nodes';
     TreeGraph.NodeClassName = 'tree-graph-node';
+    TreeGraph.NullNodeClassName = 'tree-graph-null-node';
     return TreeGraph;
 }());

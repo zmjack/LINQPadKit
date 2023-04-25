@@ -6,15 +6,17 @@ class Coord {
 class TreeNode {
     text: string;
     children: TreeNode[];
+    isNullNode?: boolean;
 
-    _area_width: number;
-    _area_height: number;
-    _element: HTMLDivElement;
+    _area_width?: number;
+    _area_height?: number;
+    _element?: HTMLDivElement;
 }
 
 class TreeGraph {
     private static readonly NodesDivClassName = 'tree-graph-nodes';
     private static readonly NodeClassName = 'tree-graph-node';
+    private static readonly NullNodeClassName = 'tree-graph-null-node';
     private element_nodes: HTMLElement;
     private element_canvas: HTMLCanvasElement;
     private context2D: CanvasRenderingContext2D;
@@ -78,17 +80,36 @@ class TreeGraph {
         this.draw_node(node, 0, 0);
     }
 
+    private nullNode: TreeNode = {
+        text: 'null',
+        children: undefined,
+        isNullNode: true,
+    };
+
     private draw_node(node: TreeNode, level: number, left: number) {
         let div = document.createElement('div');
-        div.className = TreeGraph.NodeClassName;
-        div.innerText = node.text;
+        if (node.isNullNode) {
+            div.className = TreeGraph.NullNodeClassName;
+            div.innerText = 'null';
+        } else {
+            div.className = TreeGraph.NodeClassName;
+            div.innerText = node.text;
+        }
         node._element = div;
         this.element_nodes.appendChild(node._element);
 
         node._element.style['top'] = `${level * this.levelHeight}px`;
-        node.children = node.children?.filter(x => x != null);
 
-        if (node.children != null && node.children.length > 0) {
+        node.children = node.children?.map(x => {
+            if (x != undefined) return x;
+            else return this.nullNode;
+        });
+
+        if (node.children?.some(x => x == this.nullNode)) {
+            console.log(node);
+        }
+
+        if (node.children != undefined && node.children.length > 0) {
             for (let key in node.children) {
                 let index = parseInt(key);
                 let child = node.children[index];
@@ -107,8 +128,11 @@ class TreeGraph {
 
             let firstChild = node.children[0];
             let lastChild = node.children[node.children.length - 1];
-            let chilren_width = lastChild._element.offsetLeft + lastChild._element.offsetWidth - firstChild._element.offsetLeft;
-            let offsetLeft = firstChild._element.offsetLeft + (chilren_width - node._element.offsetWidth) / 2;
+
+            let firstChild_center = (firstChild._element.offsetLeft + firstChild._element.offsetWidth / 2);
+            let lastChild_center = (lastChild._element.offsetLeft + lastChild._element.offsetWidth / 2);
+            let offsetLeft = firstChild_center + ((lastChild_center - firstChild_center) - node._element.offsetWidth) / 2;
+
             node._element.style['left'] = `${offsetLeft}px`;
 
             if (offsetLeft < left) {
