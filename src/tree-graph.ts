@@ -104,11 +104,7 @@ class TreeGraph {
             if (x != undefined) return x;
             else return this.nullNode;
         });
-
-        if (node.children?.some(x => x == this.nullNode)) {
-            console.log(node);
-        }
-
+        
         if (node.children != undefined && node.children.length > 0) {
             for (let key in node.children) {
                 let index = parseInt(key);

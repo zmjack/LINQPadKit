@@ -127,7 +127,7 @@ var TreeGraph = /** @class */ (function () {
     };
     TreeGraph.prototype.draw_node = function (node, level, left) {
         var _this = this;
-        var _a, _b;
+        var _a;
         var div = document.createElement('div');
         if (node.isNullNode) {
             div.className = TreeGraph.NullNodeClassName;
@@ -146,9 +146,6 @@ var TreeGraph = /** @class */ (function () {
             else
                 return _this.nullNode;
         });
-        if ((_b = node.children) === null || _b === void 0 ? void 0 : _b.some(function (x) { return x == _this.nullNode; })) {
-            console.log(node);
-        }
         if (node.children != undefined && node.children.length > 0) {
             for (var key in node.children) {
                 var index = parseInt(key);
