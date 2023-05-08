@@ -6,34 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="tree-graph.js"></script>
 
-    <style>
-        .tree-graph {
-            position: relative;
-            margin: 8px;
-        }
-
-        .tree-graph-node {
-            position: absolute;
-            box-sizing: border-box;
-            border: 1px solid orange;
-            padding: 10px;
-        }
-
-        .tree-graph-null-node {
-            position: absolute;
-            box-sizing: border-box;
-            border: 1px dashed #999;
-            font-style: italic;
-            color: #999;
-            padding: 10px;
-        }
-    </style>
+    <link href="TreeGraph.css" rel="stylesheet" type="text/css" />
+    <script src="../HybridCanvas.js"></script>
+    <script src="TreeGraph.js"></script>
 </head>
 
 <body>
-    <div style="border: 1px solid red;">
+    <div style="border: 1px solid red; padding: 8px;">
         <div id="graph"></div>
     </div>
 
@@ -60,7 +40,10 @@
                 }, null]
             }],
         }
-        TreeGraph.render(document.getElementById('graph'), node);
+
+        var graph = new TreeGraph();
+        graph.render(document.getElementById('graph'));
+        graph.refresh(node);
     </script>
 </body>
 

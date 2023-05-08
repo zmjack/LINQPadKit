@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="../HybridCanvas.js"></script>
+    <script src="TileMap.js"></script>
+    <link href="TileMap.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div style="border: 1px solid red; padding: 8px;">
+        <div id="graph">
+            <div class="tile-map-sprites">
+                <div class="tile-map-sprite"></div>
+                <div class="tile-map-sprite"></div>
+                <div class="tile-map-sprite"></div>
+                <div class="tile-map-sprite"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var tilemap = new TileMap(80, 2, 2);
+        tilemap.render(document.getElementById('graph'));
+
+        tilemap.useMap({
+            0: '<p> 空 </p>',
+            1: '<p> 墙墙墙 </p>',
+            2: '<p> 树 </p>',
+        });
+
+        tilemap.loadMap([
+            [1, 0],
+            [2, 1],
+        ]);
+    </script>
+</body>
+
+</html>

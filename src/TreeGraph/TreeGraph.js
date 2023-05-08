@@ -1,41 +1,65 @@
-var Coord = /** @class */ (function () {
-    function Coord() {
+/// <reference path="../Drawing.ts" />
+/// <reference path="../HybridCanvas.ts" />
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
     }
-    return Coord;
-}());
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var TreeNode = /** @class */ (function () {
     function TreeNode() {
     }
     return TreeNode;
 }());
-var TreeGraph = /** @class */ (function () {
-    function TreeGraph(element, marginlr, levelHeight) {
-        this.element = element;
-        this.marginlr = marginlr;
-        this.levelHeight = levelHeight;
-        var el_nodes = element.getElementsByClassName(TreeGraph.NodesDivClassName);
-        if (el_nodes.length == 0)
-            throw "The ".concat(TreeGraph.NodesDivClassName, " div is required.");
-        var el_canvas = element.getElementsByTagName('canvas');
-        if (el_canvas.length == 0)
-            throw "The canvas is required.";
-        this.element_nodes = el_nodes[0];
-        this.element_canvas = el_canvas[0];
-        this.context2D = this.element_canvas.getContext('2d');
-    }
-    TreeGraph.render = function (element, node, marginlr, margintb) {
+var TreeGraph = /** @class */ (function (_super) {
+    __extends(TreeGraph, _super);
+    function TreeGraph(marginlr, levelHeight) {
         if (marginlr === void 0) { marginlr = 20; }
-        if (margintb === void 0) { margintb = 80; }
-        element.innerHTML = '';
-        element.className = 'tree-graph';
-        var el_nodes = document.createElement('div');
-        el_nodes.className = TreeGraph.NodesDivClassName;
-        element.appendChild(el_nodes);
-        var el_canvas = document.createElement('canvas');
-        element.appendChild(el_canvas);
-        var graph = new TreeGraph(element, marginlr, margintb);
-        graph.draw(node);
-        return graph;
+        if (levelHeight === void 0) { levelHeight = 80; }
+        var _this = _super.call(this) || this;
+        _this.marginlr = marginlr;
+        _this.levelHeight = levelHeight;
+        _this.classNames = {
+            graph: 'tree-graph',
+            sprites_container: 'tree-graph-nodes',
+            sprite: 'tree-graph-node',
+            sprite_null: 'tree-graph-null-node',
+        };
+        return _this;
+    }
+    TreeGraph.prototype.refresh = function (node) {
+        if (node === void 0) { node = undefined; }
+        if (this.element == null)
+            throw "Use render before refresh.";
+        this.clear();
+        node = node !== null && node !== void 0 ? node : this.node;
+        if (node) {
+            this.node = node;
+            this.setup_node_core(this.node, 0, 0);
+            this.size = {
+                width: this.node._area_width,
+                height: this.node._area_height,
+            };
+            this.draw_node_arrows_core(this.node);
+        }
     };
     TreeGraph.prototype.offset_x = function (node, offset) {
         node._element.style['left'] = "".concat(node._element.offsetLeft + offset, "px");
@@ -46,46 +70,22 @@ var TreeGraph = /** @class */ (function () {
             }
         }
     };
-    TreeGraph.prototype.clear = function () {
-        this.element_nodes.innerHTML = '';
-        this.context2D.clearRect(0, 0, this.element_canvas.width, this.element_canvas.height);
-    };
-    TreeGraph.prototype.refresh = function () {
-        this.draw(this.node);
-    };
-    TreeGraph.prototype.draw = function (node) {
-        this.node = node;
-        this.clear();
-        this.draw_nodes(node);
-        this.element_canvas.width = node._area_width;
-        this.element_canvas.height = node._area_height;
-        this.draw_arrows(node);
-    };
-    TreeGraph.prototype.draw_nodes = function (node) {
-        this.draw_node(node, 0, 0);
-    };
-    TreeGraph.prototype.draw_node = function (node, level, left) {
+    TreeGraph.prototype.setup_node_core = function (node, level, left) {
         var _this = this;
         var _a;
         var div = document.createElement('div');
-        if (node.isNullNode) {
-            div.className = TreeGraph.NullNodeClassName;
-            div.innerText = 'null';
-        }
-        else {
-            div.className = TreeGraph.NodeClassName;
-            div.innerText = node.text;
-        }
+        div.className = node.isNullNode ? this.classNames.sprite_null : this.classNames.sprite;
+        div.innerText = node.text;
         node._element = div;
-        this.element_nodes.appendChild(node._element);
         node._element.style['top'] = "".concat(level * this.levelHeight, "px");
+        this.addSprite(node._element, false);
         node.children = (_a = node.children) === null || _a === void 0 ? void 0 : _a.map(function (x) {
             if (x != undefined)
                 return x;
             else {
                 var nullNode = new TreeNode();
-                nullNode.text = 'null';
                 nullNode.isNullNode = true;
+                nullNode.text = 'null';
                 return nullNode;
             }
             ;
@@ -98,7 +98,7 @@ var TreeGraph = /** @class */ (function () {
                 for (var i = 1; i <= index; i++) {
                     _left += node.children[i - 1]._area_width + this.marginlr;
                 }
-                this.draw_node(child, level + 1, _left);
+                this.setup_node_core(child, level + 1, _left);
             }
             node._area_width = Math.max(node.children.map(function (x) { return x._area_width; }).reduce(function (a, b) { return a + b + _this.marginlr; }), node._element.offsetWidth);
             node._area_height = Math.max.apply(Math, node.children.map(function (x) { return x._area_height; })) + this.levelHeight;
@@ -118,12 +118,12 @@ var TreeGraph = /** @class */ (function () {
             node._element.style['left'] = "".concat(left, "px");
         }
     };
-    TreeGraph.prototype.draw_arrows = function (node) {
+    TreeGraph.prototype.draw_node_arrows_core = function (node) {
         if (node.children != null && node.children.length > 0) {
             for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
                 var child = _a[_i];
                 this.draw_arrow(node._element, child._element);
-                this.draw_arrows(child);
+                this.draw_node_arrows_core(child);
             }
         }
     };
@@ -157,21 +157,8 @@ var TreeGraph = /** @class */ (function () {
                 x: arrowBase.x - arrowOffsets.x,
                 y: arrowBase.y + arrowOffsets.y
             }];
-        this.context2D.beginPath();
-        this.context2D.moveTo(start.x, start.y);
-        this.context2D.lineTo(end.x, end.y);
-        this.context2D.moveTo(end.x, end.y);
-        for (var _i = 0, arrowPositions_1 = arrowPositions; _i < arrowPositions_1.length; _i++) {
-            var pos = arrowPositions_1[_i];
-            this.context2D.lineTo(pos.x, pos.y);
-        }
-        this.context2D.lineTo(end.x, end.y);
-        this.context2D.closePath();
-        this.context2D.fill();
-        this.context2D.stroke();
+        this.line(start, end);
+        this.polygon(__spreadArray([end], arrowPositions, true));
     };
-    TreeGraph.NodesDivClassName = 'tree-graph-nodes';
-    TreeGraph.NodeClassName = 'tree-graph-node';
-    TreeGraph.NullNodeClassName = 'tree-graph-null-node';
     return TreeGraph;
-}());
+}(HybridCanvas));

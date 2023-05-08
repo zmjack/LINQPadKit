@@ -1,7 +1,5 @@
-class Coord {
-    x: number;
-    y: number;
-}
+/// <reference path="../Drawing.ts" />
+/// <reference path="../HybridCanvas.ts" />
 
 class TreeNode {
     text: string;
@@ -13,40 +11,34 @@ class TreeNode {
     _element?: HTMLDivElement;
 }
 
-class TreeGraph {
-    private static readonly NodesDivClassName = 'tree-graph-nodes';
-    private static readonly NodeClassName = 'tree-graph-node';
-    private static readonly NullNodeClassName = 'tree-graph-null-node';
-    private element_nodes: HTMLElement;
-    private element_canvas: HTMLCanvasElement;
-    private context2D: CanvasRenderingContext2D;
+class TreeGraph extends HybridCanvas {
+    public override classNames = {
+        graph: 'tree-graph',
+        sprites_container: 'tree-graph-nodes',
+        sprite: 'tree-graph-node',
+        sprite_null: 'tree-graph-null-node',
+    };
+
     private node: TreeNode;
 
-    private constructor(private element: HTMLElement, private marginlr: number, private levelHeight: number) {
-        let el_nodes = element.getElementsByClassName(TreeGraph.NodesDivClassName);
-        if (el_nodes.length == 0) throw `The ${TreeGraph.NodesDivClassName} div is required.`;
-        let el_canvas = element.getElementsByTagName('canvas');
-        if (el_canvas.length == 0) throw "The canvas is required.";
-
-        this.element_nodes = el_nodes[0] as HTMLElement;
-        this.element_canvas = el_canvas[0] as HTMLCanvasElement;
-        this.context2D = this.element_canvas.getContext('2d');
+    constructor(private marginlr: number = 20, private levelHeight: number = 80) {
+        super();
     }
 
-    static render(element: HTMLElement, node: TreeNode, marginlr = 20, margintb = 80): TreeGraph {
-        element.innerHTML = '';
-        element.className = 'tree-graph';
+    override refresh(node: TreeNode = undefined) {
+        if (this.element == null) throw "Use render before refresh."
 
-        let el_nodes = document.createElement('div');
-        el_nodes.className = TreeGraph.NodesDivClassName;
-        element.appendChild(el_nodes);
-
-        let el_canvas = document.createElement('canvas');
-        element.appendChild(el_canvas);
-
-        let graph = new TreeGraph(element, marginlr, margintb);
-        graph.draw(node);
-        return graph;
+        this.clear();
+        node = node ?? this.node;
+        if (node) {
+            this.node = node;
+            this.setup_node_core(this.node, 0, 0);
+            this.size = {
+                width: this.node._area_width,
+                height: this.node._area_height,
+            };
+            this.draw_node_arrows_core(this.node);
+        }
     }
 
     private offset_x(node: TreeNode, offset: number) {
@@ -58,48 +50,20 @@ class TreeGraph {
         }
     }
 
-    clear() {
-        this.element_nodes.innerHTML = '';
-        this.context2D.clearRect(0, 0, this.element_canvas.width, this.element_canvas.height);
-    }
-
-    refresh() {
-        this.draw(this.node);
-    }
-
-    draw(node: TreeNode) {
-        this.node = node;
-        this.clear();
-        this.draw_nodes(node);
-        this.element_canvas.width = node._area_width;
-        this.element_canvas.height = node._area_height;
-        this.draw_arrows(node);
-    }
-
-    private draw_nodes(node: TreeNode) {
-        this.draw_node(node, 0, 0);
-    }
-
-    private draw_node(node: TreeNode, level: number, left: number) {
+    private setup_node_core(node: TreeNode, level: number, left: number) {
         let div = document.createElement('div');
-        if (node.isNullNode) {
-            div.className = TreeGraph.NullNodeClassName;
-            div.innerText = 'null';
-        } else {
-            div.className = TreeGraph.NodeClassName;
-            div.innerText = node.text;
-        }
+        div.className = node.isNullNode ? this.classNames.sprite_null : this.classNames.sprite;
+        div.innerText = node.text;
         node._element = div;
-        this.element_nodes.appendChild(node._element);
-
         node._element.style['top'] = `${level * this.levelHeight}px`;
+        this.addSprite(node._element, false);
 
         node.children = node.children?.map(x => {
             if (x != undefined) return x;
             else {
                 let nullNode = new TreeNode();
-                nullNode.text = 'null';
                 nullNode.isNullNode = true;
+                nullNode.text = 'null';
                 return nullNode;
             };
         });
@@ -112,7 +76,7 @@ class TreeGraph {
                 for (let i = 1; i <= index; i++) {
                     _left += node.children[i - 1]._area_width + this.marginlr;
                 }
-                this.draw_node(child, level + 1, _left);
+                this.setup_node_core(child, level + 1, _left);
             }
 
             node._area_width = Math.max(
@@ -140,16 +104,16 @@ class TreeGraph {
         }
     }
 
-    draw_arrows(node: TreeNode) {
+    private draw_node_arrows_core(node: TreeNode) {
         if (node.children != null && node.children.length > 0) {
             for (let child of node.children) {
                 this.draw_arrow(node._element, child._element);
-                this.draw_arrows(child);
+                this.draw_node_arrows_core(child);
             }
         }
     }
 
-    draw_arrow(el_from: HTMLElement, el_to: HTMLElement) {
+    private draw_arrow(el_from: HTMLElement, el_to: HTMLElement) {
         let start = {
             x: el_from.offsetLeft + el_from.offsetWidth / 2,
             y: el_from.offsetTop + el_from.offsetHeight - 1
@@ -165,19 +129,19 @@ class TreeGraph {
         let lineLength = Math.sqrt(Math.pow(end.y - start.y, 2) + Math.pow(end.x - start.x, 2));
         let percent = length / lineLength;
 
-        let arrowBase = {
+        let arrowBase: Position2D = {
             x: end.x - (end.x - start.x) * percent,
             y: end.y - (end.y - start.y) * percent,
         };
 
         let sin = (end.x - arrowBase.x) / length;
         let cos = (end.y - arrowBase.y) / length;
-        let arrowOffsets = {
+        let arrowOffsets: Position2D = {
             x: cos * size,
             y: sin * size,
         };
 
-        let arrowPositions = [{
+        let arrowPositions: Position2D[] = [{
             x: arrowBase.x + arrowOffsets.x,
             y: arrowBase.y - arrowOffsets.y
         }, {
@@ -185,18 +149,7 @@ class TreeGraph {
             y: arrowBase.y + arrowOffsets.y
         }];
 
-        this.context2D.beginPath();
-
-        this.context2D.moveTo(start.x, start.y);
-        this.context2D.lineTo(end.x, end.y);
-
-        this.context2D.moveTo(end.x, end.y);
-        for (let pos of arrowPositions) {
-            this.context2D.lineTo(pos.x, pos.y);
-        }
-        this.context2D.lineTo(end.x, end.y);
-        this.context2D.closePath();
-        this.context2D.fill();
-        this.context2D.stroke();
+        this.line(start, end);
+        this.polygon([end, ...arrowPositions]);
     }
 }

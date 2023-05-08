@@ -1,0 +1,64 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#+
+    private string GetPath(params string[] folders)
+    {
+        return Path.Combine(new[]
+        {
+            Host.ResolveAssemblyReference("$(SolutionDir)"),
+            Path.Combine(folders)
+        });
+    }
+
+    private string[] GetReferencePaths(string javascript)
+    {
+        var regex = new Regex(@"<reference path=""([^""]+)"" />");
+        var matches = regex.Matches(javascript);
+        return (from Match match in matches select match.Groups[1].Value).ToArray();
+    }
+    
+    private string GetCss(string path)
+    {
+        if (!File.Exists(path)) return string.Empty;
+        return File.ReadAllText(path);
+    }
+
+    private string GetJavascript(string path)
+    {
+        var writer = new StringBuilder();
+        var loadList = new HashSet<string>();
+        WriteJavascriptCore(writer, loadList, path);
+        return writer.ToString();
+    }
+
+    private void WriteJavascriptCore(StringBuilder writer, HashSet<string> loadList, string path)
+    {
+        var name = Path.GetFileNameWithoutExtension(path);
+        loadList.Add(name);
+
+        if (!File.Exists(path)) return;
+
+        var javascript = File.ReadAllText(path).Trim();
+        var referencePaths = GetReferencePaths(javascript);
+
+        foreach(var referencePath in referencePaths)
+        {
+            var _referencePath = Path.Combine(path, "..", referencePath).Replace(".ts", ".js");
+            if (loadList.Contains(Path.GetFileNameWithoutExtension(_referencePath))) continue;
+            
+            WriteJavascriptCore(writer, loadList, _referencePath);
+        }
+        
+        if (writer.Length > 0) writer.AppendLine();
+
+        writer.AppendLine($"// #region {name}");
+        writer.AppendLine(javascript);
+        writer.AppendLine($"// #endregion");
+    }
+#>

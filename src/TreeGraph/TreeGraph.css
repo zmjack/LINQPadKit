@@ -1,0 +1,19 @@
+.tree-graph {
+    position: relative;
+}
+
+.tree-graph-node {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1px solid orange;
+    padding: 10px;
+}
+
+.tree-graph-null-node {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1px dashed #999;
+    font-style: italic;
+    color: #999;
+    padding: 10px;
+}
