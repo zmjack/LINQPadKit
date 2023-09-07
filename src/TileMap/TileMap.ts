@@ -1,89 +1,138 @@
-/// <reference path="../Drawing.ts" />
-/// <reference path="../HybridCanvas.ts" />
+/// <reference path="../fabric-impl.d.ts" />
+type Shape = 'rectangle' | 'hexagon';
+type FabricShape = fabric.Rect | fabric.Path;
 
-class TileMap extends HybridCanvas {
-    private tileHtmlMap: { [key: string]: string };
+interface TileMapCell {
+    element: FabricShape;
+    x: number;
+    y: number;
+}
 
-    public override classNames = {
-        graph: 'tile-map',
-        sprites_container: 'tile-map-sprites',
-        sprite: 'tile-map-sprite',
-    };
+class TileMap {
+    bridge: string;
+    cells: TileMapCell[][];
+    canvas: HTMLCanvasElement;
+    fabricCanvas: fabric.Canvas;
 
-    protected constructor(private tileSize: number, private tileWidth: number, private tileHeight: number) {
-        super();
+    constructor(public shape: Shape, public size: number, public width: number, public height: number) {
+
     }
 
-    override render(element: HTMLElement, ...params: any[]): void {
-        super.render(element, ...params);
-
-        let sprites = this.element_sprites_container.getElementsByClassName(this.classNames.sprite);
-        for (let i = 0; i < sprites.length; i++) {
-            var sprite = sprites[i] as HTMLElement;
-            this.addSprite(sprite, true);
+    render(id: string, params?: { bridge?: string }): void {
+        if (params?.bridge) {
+            let el_bridge = document.getElementById(params.bridge);
+            if (el_bridge == null) throw "Invalid bridge id.";
+            this.bridge = params.bridge;
         }
 
-        if (this.element_sprites.length != this.tileHeight * this.tileWidth) throw `The length(${this.element_sprites.length}) of sprites must be ${this.tileHeight * this.tileWidth}.`;
-    }
+        let element = document.getElementById(id);
+        element.innerHTML = '';
 
-    override refresh() {
-        if (this.element == null) throw "Use render before refresh."
+        let canvas = document.createElement('canvas');
 
-        this.clearCanvas();
-        this.size = {
-            width: this.tileSize * this.tileWidth,
-            height: this.tileSize * this.tileHeight,
-        };
-        this.drawBackground();
-    }
-
-    private drawBackground() {
-        for (let y = 0; y < this.tileHeight; y++) {
-            for (let x = 0; x < this.tileWidth; x++) {
-                this.rectangle({
-                    x: x * this.tileSize,
-                    y: y * this.tileSize
-                }, {
-                    x: (x + 1) * this.tileSize,
-                    y: (y + 1) * this.tileSize
-                }, {
-                    fillColor: (y + x) % 2 == 0 ? '#808080' : '#C0C0C0',
-                });
-            }
+        if (this.shape == 'rectangle') {
+            canvas.width = this.size * this.width;
+            canvas.height = this.size * this.height;
+        } else if (this.shape == 'hexagon') {
+            canvas.width = this.size * this.width + this.size / 2;
+            canvas.height = (this.size / 2 * Math.sqrt(3) / 2) * (this.height * 2 + 1);
         }
+        element.appendChild(canvas);
+        this.canvas = canvas;
+
+        this.fabricCanvas = new fabric.Canvas(canvas);
+        this.fabricCanvas.selection = false;
+        this.init(this.shape);
     }
 
-    useMap(tileHtmlMap: { [key: number]: string }) {
-        this.tileHtmlMap = tileHtmlMap;
+    setImage(x: number, y: number, color: string) {
+        let cell = this.cells[y][x];
+        (cell.element as any).set('fill', color);
+        this.fabricCanvas.renderAll();
     }
 
-    loadMap(map: number[][]) {
-        if (this.element_sprites.length == 0) {
-            for (let y = 0; y < this.tileHeight; y++) {
-                for (let x = 0; x < this.tileWidth; x++) {
-                    this.addSprite(this.createSprite(), false);
+    setColor(x: number, y: number, color: string) {
+        let cell = this.cells[y][x];
+        (cell.element as any).set('fill', color);
+        this.fabricCanvas.renderAll();
+    }
+
+    getColor(x: number, y: number): string {
+        let cell = this.cells[y][x];
+        return (cell.element as any).get('fill');
+    }
+
+    resetColor(x: number, y: number) {
+        let cell = this.cells[y][x];
+        (cell.element as any).set('fill', this.getOriginColor(x, y));
+        this.fabricCanvas.renderAll();
+    }
+
+    getOriginColor(x: number, y: number) {
+        return '#C0C0C0';
+    }
+
+    init(shape: Shape) {
+        this.cells = [];
+        if (shape == 'rectangle') {
+            for (let y = 0; y < this.height; y++) {
+                let row: TileMapCell[] = [];
+                for (let x = 0; x < this.width; x++) {
+                    let rect = new fabric.Rect({
+                        left: x * this.size,
+                        top: y * this.size,
+                        fill: this.getOriginColor(y, x),
+                        width: this.size,
+                        height: this.size,
+                        selectable: false,
+                        hoverCursor: 'default'
+                    });
+
+                    let cell = { element: rect, y, x };
+                    rect.on('mousedown', e => {
+                        this.mousedown(this.bridge, 'cell:mousedown', { x: cell.x, y: cell.y });
+                    });
+                    this.fabricCanvas.add(rect);
+                    row.push(cell);
                 }
+                this.cells.push(row);
             }
-        }
+        } else if (shape == 'hexagon') {
+            for (let y = 0; y < this.height; y++) {
+                let row: TileMapCell[] = [];
+                for (let x = 0; x < this.width; x++) {
+                    let height_d2 = this.size / 2 * Math.sqrt(3) / 2;
+                    let left = x * this.size + (y % 2 == 0 ? 0 : this.size / 2);
+                    let top = y * this.size / 2 * Math.sqrt(3);
+                    let points: [number, number][] = [
+                        [left + Math.floor(this.size / 2), top],
+                        [left + this.size, top + height_d2],
+                        [left + this.size, top + height_d2 * 2],
+                        [left + Math.floor(this.size / 2), top + height_d2 * 3],
+                        [left, top + height_d2 * 2],
+                        [left, top + height_d2],
+                    ];
 
-        if (this.element_sprites.length != this.tileHeight * this.tileWidth) throw `The length(${this.element_sprites.length}) of sprites must be ${this.tileHeight * this.tileWidth}.`;
+                    let path = new fabric.Path(`M ${points.map(p => `${p[0]} ${p[1]}`).join(' L ')} z`);
+                    path.fill = this.getOriginColor(y, x);
+                    path.selectable = false;
+                    path.hoverCursor = 'default';
 
-        for (let y = 0; y < this.tileHeight; y++) {
-            for (let x = 0; x < this.tileWidth; x++) {
-                let div = this.element_sprites[y * this.tileHeight + x];
-                let value = map[y] ? map[y][x] : undefined;
-                div.innerHTML = value ? this.tileHtmlMap[value] : '';
-                div.style['top'] = `${y * this.tileSize}px`;
-                div.style['left'] = `${x * this.tileSize}px`;
-                div.style['width'] = `${this.tileSize}px`;
-                div.style['height'] = `${this.tileSize}px`;
+                    let cell = { element: path, y, x };
+                    path.on('mousedown', e => {
+                        this.mousedown(this.bridge, 'cell:mousedown', { x: cell.x, y: cell.y });
+                    });
+                    this.fabricCanvas.add(path);
+                    row.push(cell);
+                }
+                this.cells.push(row);
             }
         }
     }
 
-    createSprite() {
-        let div = document.createElement('div');
-        div.className = this.classNames.sprite;
-        return div;
+    mousedown(id: string, event: string, detail: object) {
+        let _event = new CustomEvent(event, { detail });
+        let element = document.getElementById(id);
+        element.dispatchEvent(_event);
     }
 }

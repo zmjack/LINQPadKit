@@ -1,0 +1,28 @@
+﻿<#@ template language="C#" hostspecific="true" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Runtime.Remoting.Messaging" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<##>
+<#+
+	private string Render(string template, Dictionary<string, object> parameters)
+	{
+		var templateFile = Host.ResolvePath(template);
+		var templateContent = File.ReadAllText(templateFile);
+
+		foreach(var pair in parameters)
+		{
+			CallContext.LogicalSetData(pair.Key, pair.Value);
+		}
+
+		var engine = new Engine();
+		var generatedContent = engine.ProcessTemplate(templateContent, Host);
+		
+		foreach(var pair in parameters)
+		{
+			CallContext.FreeNamedDataSlot(pair.Key);
+		}
+
+		return generatedContent;
+	}
+#>

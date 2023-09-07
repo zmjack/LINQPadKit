@@ -1,41 +1,38 @@
 ﻿using LINQPad.Controls.Core;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace LINQPadKit.Design
 {
     public interface IKit
     {
         abstract static void Import();
-        string Export { get; }
+        string Instance { get; }
         bool IsRendered { get; }
-        bool Ready { get; set; }
 
-        Task StartRenderTask(HtmlElement element)
+        void InitailizeInstance();
+        void Render();
+
+        Task InitailizeAsync()
         {
             return Task.Run(() =>
             {
-                var stop = new Stopwatch();
-                stop.Start();
-                while (!IsRendered)
-                {
-                    if (stop.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException();
-                }
-                stop.Stop();
-
-                element.InvokeScript(false, "eval", $"{Export}.render(document.getElementById('{element.ID}'));");
-                Ready = true;
+                Wait(() => IsRendered);
+                InitailizeInstance();
             });
         }
 
-        void WaitReady()
+        public void WaitForReady() => Wait(() => Instance is not null);
+
+        void Wait(Func<bool> predicate)
         {
-            if (Ready) return;
+            if (predicate()) return;
 
             var stop = new Stopwatch();
             stop.Start();
-            while (!Ready)
+            while (!predicate())
             {
-                if (stop.Elapsed > TimeSpan.FromSeconds(10)) throw new TimeoutException();
+                if (stop.Elapsed > TimeSpan.FromSeconds(5)) throw new TimeoutException();
             }
             stop.Stop();
         }

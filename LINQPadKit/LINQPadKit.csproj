@@ -11,7 +11,7 @@
     <Authors>zmjack</Authors>
     <Company>nstandard.net</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.9-preview</Version>
+    <Version>0.1.12.2-preview</Version>
     <Description>Extension Toolkit for LINQPad.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
@@ -26,8 +26,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LINQPad.Runtime" Version="7.6.6" />
-    <PackageReference Include="NStandard" Version="0.27.0" />
+    <None Remove="scripts\cdn.jsdelivr.net_npm_mermaid%4010.4.0_dist_mermaid.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="scripts\cdn.jsdelivr.net_npm_mermaid@10.4.0_dist_mermaid.min.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LINQPad.Runtime" Version="7.7.15" />
+    <PackageReference Include="NStandard" Version="0.37.0" />
   </ItemGroup>
 
   <ItemGroup>

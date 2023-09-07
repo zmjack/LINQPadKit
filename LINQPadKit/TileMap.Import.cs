@@ -22,236 +22,134 @@ namespace LINQPadKit
 """
             );
 
+            Util.HtmlHead.AddScriptFromUri("https://cdn.jsdelivr.net/npm/fabric");
             Util.HtmlHead.AddScript("""
-// #region Drawing
-var Position2D = /** @class */ (function () {
-    function Position2D(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-    return Position2D;
-}());
-var Size = /** @class */ (function () {
-    function Size(width, height) {
+// #region TileMap
+/// <reference path="../fabric-impl.d.ts" />
+var TileMap = /** @class */ (function () {
+    function TileMap(shape, size, width, height) {
+        this.shape = shape;
+        this.size = size;
         this.width = width;
         this.height = height;
     }
-    return Size;
-}());
-// #endregion
-
-// #region HybridCanvas
-/// <reference path="./Drawing.ts" />
-var DrawingOptions = /** @class */ (function () {
-    function DrawingOptions() {
-    }
-    return DrawingOptions;
-}());
-var HybridCanvas = /** @class */ (function () {
-    function HybridCanvas() {
-        this.element_sprites = [];
-    }
-    Object.defineProperty(HybridCanvas.prototype, "size", {
-        set: function (value) {
-            this.element_canvas.width = value.width;
-            this.element_canvas.height = value.height;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    HybridCanvas.prototype.render = function (element) {
-        var params = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            params[_i - 1] = arguments[_i];
+    TileMap.prototype.render = function (id, params) {
+        if (params === null || params === void 0 ? void 0 : params.bridge) {
+            var el_bridge = document.getElementById(params.bridge);
+            if (el_bridge == null)
+                throw "Invalid bridge id.";
+            this.bridge = params.bridge;
         }
-        this.element = element;
-        this.element.className = this.classNames.graph;
-        this.element_sprites_container = this.element.getElementsByClassName(this.classNames.sprites_container)[0];
-        if (this.element_sprites_container == null) {
-            var container = document.createElement('div');
-            container.className = this.classNames.sprites_container;
-            this.element.appendChild(container);
-            this.element_sprites_container = container;
+        var element = document.getElementById(id);
+        element.innerHTML = '';
+        var canvas = document.createElement('canvas');
+        if (this.shape == 'rectangle') {
+            canvas.width = this.size * this.width;
+            canvas.height = this.size * this.height;
         }
-        this.element_canvas = this.element.getElementsByTagName("canvas")[0];
-        if (this.element_canvas == null) {
-            var canvas = document.createElement('canvas');
-            this.element.appendChild(canvas);
-            this.element_canvas = canvas;
+        else if (this.shape == 'hexagon') {
+            canvas.width = this.size * this.width + this.size / 2;
+            canvas.height = (this.size / 2 * Math.sqrt(3) / 2) * (this.height * 2 + 1);
         }
-        this.context2D = this.element_canvas.getContext('2d');
-        this.refresh.apply(this, params);
+        element.appendChild(canvas);
+        this.canvas = canvas;
+        this.fabricCanvas = new fabric.Canvas(canvas);
+        this.fabricCanvas.selection = false;
+        this.init(this.shape);
     };
-    HybridCanvas.prototype.clear = function () {
-        this.clearCanvas();
-        this.clearSprites();
+    TileMap.prototype.setImage = function (x, y, color) {
+        var cell = this.cells[y][x];
+        cell.element.set('fill', color);
+        this.fabricCanvas.renderAll();
     };
-    HybridCanvas.prototype.clearCanvas = function () {
-        this.context2D.clearRect(0, 0, this.element_canvas.width, this.element_canvas.height);
+    TileMap.prototype.setColor = function (x, y, color) {
+        var cell = this.cells[y][x];
+        cell.element.set('fill', color);
+        this.fabricCanvas.renderAll();
     };
-    HybridCanvas.prototype.addSprite = function (sprite, exsist) {
-        this.element_sprites.push(sprite);
-        if (!exsist)
-            this.element_sprites_container.appendChild(sprite);
+    TileMap.prototype.getColor = function (x, y) {
+        var cell = this.cells[y][x];
+        return cell.element.get('fill');
     };
-    HybridCanvas.prototype.clearSprites = function () {
-        this.element_sprites_container.innerHTML = '';
-        this.element_sprites = [];
+    TileMap.prototype.resetColor = function (x, y) {
+        var cell = this.cells[y][x];
+        cell.element.set('fill', this.getOriginColor(x, y));
+        this.fabricCanvas.renderAll();
     };
-    HybridCanvas.prototype.useOptions = function (options) {
-        if (options === null || options === void 0 ? void 0 : options.strokeColor) {
-            this.context2D.strokeStyle = options.strokeColor;
-        }
-        if (options === null || options === void 0 ? void 0 : options.fillColor) {
-            this.context2D.fillStyle = options.fillColor;
-        }
+    TileMap.prototype.getOriginColor = function (x, y) {
+        return '#C0C0C0';
     };
-    HybridCanvas.prototype.polygon = function (positions, options) {
-        var first = true;
-        if (positions.length > 0) {
-            this.context2D.beginPath();
-            for (var _i = 0, positions_1 = positions; _i < positions_1.length; _i++) {
-                var pos = positions_1[_i];
-                if (first) {
-                    this.context2D.moveTo(pos.x, pos.y);
-                    first = false;
+    TileMap.prototype.init = function (shape) {
+        var _this = this;
+        this.cells = [];
+        if (shape == 'rectangle') {
+            for (var y = 0; y < this.height; y++) {
+                var row = [];
+                var _loop_1 = function (x) {
+                    var rect = new fabric.Rect({
+                        left: x * this_1.size,
+                        top: y * this_1.size,
+                        fill: this_1.getOriginColor(y, x),
+                        width: this_1.size,
+                        height: this_1.size,
+                        selectable: false,
+                        hoverCursor: 'default'
+                    });
+                    var cell = { element: rect, y: y, x: x };
+                    rect.on('mousedown', function (e) {
+                        _this.mousedown(_this.bridge, 'cell:mousedown', { x: cell.x, y: cell.y });
+                    });
+                    this_1.fabricCanvas.add(rect);
+                    row.push(cell);
+                };
+                var this_1 = this;
+                for (var x = 0; x < this.width; x++) {
+                    _loop_1(x);
                 }
-                else
-                    this.context2D.lineTo(pos.x, pos.y);
-            }
-            this.context2D.closePath();
-            this.useOptions(options);
-            this.context2D.stroke();
-            this.context2D.fill();
-        }
-    };
-    HybridCanvas.prototype.line = function (from, to, options) {
-        this.context2D.beginPath();
-        this.context2D.moveTo(from.x, from.y);
-        this.context2D.lineTo(to.x, to.y);
-        this.context2D.closePath();
-        this.useOptions(options);
-        this.context2D.stroke();
-    };
-    HybridCanvas.prototype.rectangle = function (lt, rb, options) {
-        this.polygon([lt, { x: rb.x, y: lt.y }, rb, { x: lt.x, y: rb.y }], options);
-    };
-    return HybridCanvas;
-}());
-// #endregion
-
-// #region TileMap
-/// <reference path="../Drawing.ts" />
-/// <reference path="../HybridCanvas.ts" />
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-var TileMap = /** @class */ (function (_super) {
-    __extends(TileMap, _super);
-    function TileMap(tileSize, tileWidth, tileHeight) {
-        var _this = _super.call(this) || this;
-        _this.tileSize = tileSize;
-        _this.tileWidth = tileWidth;
-        _this.tileHeight = tileHeight;
-        _this.classNames = {
-            graph: 'tile-map',
-            sprites_container: 'tile-map-sprites',
-            sprite: 'tile-map-sprite',
-        };
-        return _this;
-    }
-    TileMap.prototype.render = function (element) {
-        var params = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            params[_i - 1] = arguments[_i];
-        }
-        _super.prototype.render.apply(this, __spreadArray([element], params, false));
-        var sprites = this.element_sprites_container.getElementsByClassName(this.classNames.sprite);
-        for (var i = 0; i < sprites.length; i++) {
-            var sprite = sprites[i];
-            this.addSprite(sprite, true);
-        }
-        if (this.element_sprites.length != this.tileHeight * this.tileWidth)
-            throw "The length(".concat(this.element_sprites.length, ") of sprites must be ").concat(this.tileHeight * this.tileWidth, ".");
-    };
-    TileMap.prototype.refresh = function () {
-        if (this.element == null)
-            throw "Use render before refresh.";
-        this.clearCanvas();
-        this.size = {
-            width: this.tileSize * this.tileWidth,
-            height: this.tileSize * this.tileHeight,
-        };
-        this.drawBackground();
-    };
-    TileMap.prototype.drawBackground = function () {
-        for (var y = 0; y < this.tileHeight; y++) {
-            for (var x = 0; x < this.tileWidth; x++) {
-                this.rectangle({
-                    x: x * this.tileSize,
-                    y: y * this.tileSize
-                }, {
-                    x: (x + 1) * this.tileSize,
-                    y: (y + 1) * this.tileSize
-                }, {
-                    fillColor: (y + x) % 2 == 0 ? '#808080' : '#C0C0C0',
-                });
+                this.cells.push(row);
             }
         }
-    };
-    TileMap.prototype.useMap = function (tileHtmlMap) {
-        this.tileHtmlMap = tileHtmlMap;
-    };
-    TileMap.prototype.loadMap = function (map) {
-        if (this.element_sprites.length == 0) {
-            for (var y = 0; y < this.tileHeight; y++) {
-                for (var x = 0; x < this.tileWidth; x++) {
-                    this.addSprite(this.createSprite(), false);
+        else if (shape == 'hexagon') {
+            for (var y = 0; y < this.height; y++) {
+                var row = [];
+                var _loop_2 = function (x) {
+                    var height_d2 = this_2.size / 2 * Math.sqrt(3) / 2;
+                    var left = x * this_2.size + (y % 2 == 0 ? 0 : this_2.size / 2);
+                    var top_1 = y * this_2.size / 2 * Math.sqrt(3);
+                    var points = [
+                        [left + Math.floor(this_2.size / 2), top_1],
+                        [left + this_2.size, top_1 + height_d2],
+                        [left + this_2.size, top_1 + height_d2 * 2],
+                        [left + Math.floor(this_2.size / 2), top_1 + height_d2 * 3],
+                        [left, top_1 + height_d2 * 2],
+                        [left, top_1 + height_d2],
+                    ];
+                    var path = new fabric.Path("M ".concat(points.map(function (p) { return "".concat(p[0], " ").concat(p[1]); }).join(' L '), " z"));
+                    path.fill = this_2.getOriginColor(y, x);
+                    path.selectable = false;
+                    path.hoverCursor = 'default';
+                    var cell = { element: path, y: y, x: x };
+                    path.on('mousedown', function (e) {
+                        _this.mousedown(_this.bridge, 'cell:mousedown', { x: cell.x, y: cell.y });
+                    });
+                    this_2.fabricCanvas.add(path);
+                    row.push(cell);
+                };
+                var this_2 = this;
+                for (var x = 0; x < this.width; x++) {
+                    _loop_2(x);
                 }
-            }
-        }
-        if (this.element_sprites.length != this.tileHeight * this.tileWidth)
-            throw "The length(".concat(this.element_sprites.length, ") of sprites must be ").concat(this.tileHeight * this.tileWidth, ".");
-        for (var y = 0; y < this.tileHeight; y++) {
-            for (var x = 0; x < this.tileWidth; x++) {
-                var div = this.element_sprites[y * this.tileHeight + x];
-                var value = map[y] ? map[y][x] : undefined;
-                div.innerHTML = value ? this.tileHtmlMap[value] : '';
-                div.style['top'] = "".concat(y * this.tileSize, "px");
-                div.style['left'] = "".concat(x * this.tileSize, "px");
-                div.style['width'] = "".concat(this.tileSize, "px");
-                div.style['height'] = "".concat(this.tileSize, "px");
+                this.cells.push(row);
             }
         }
     };
-    TileMap.prototype.createSprite = function () {
-        var div = document.createElement('div');
-        div.className = this.classNames.sprite;
-        return div;
+    TileMap.prototype.mousedown = function (id, event, detail) {
+        var _event = new CustomEvent(event, { detail: detail });
+        var element = document.getElementById(id);
+        element.dispatchEvent(_event);
     };
     return TileMap;
-}(HybridCanvas));
+}());
 // #endregion
 """
             );

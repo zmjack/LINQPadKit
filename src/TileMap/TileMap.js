@@ -1,111 +1,125 @@
-/// <reference path="../Drawing.ts" />
-/// <reference path="../HybridCanvas.ts" />
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
+/// <reference path="../fabric-impl.d.ts" />
+var TileMap = /** @class */ (function () {
+    function TileMap(shape, size, width, height) {
+        this.shape = shape;
+        this.size = size;
+        this.width = width;
+        this.height = height;
     }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-var TileMap = /** @class */ (function (_super) {
-    __extends(TileMap, _super);
-    function TileMap(tileSize, tileWidth, tileHeight) {
-        var _this = _super.call(this) || this;
-        _this.tileSize = tileSize;
-        _this.tileWidth = tileWidth;
-        _this.tileHeight = tileHeight;
-        _this.classNames = {
-            graph: 'tile-map',
-            sprites_container: 'tile-map-sprites',
-            sprite: 'tile-map-sprite',
-        };
-        return _this;
-    }
-    TileMap.prototype.render = function (element) {
-        var params = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            params[_i - 1] = arguments[_i];
+    TileMap.prototype.render = function (id, params) {
+        if (params === null || params === void 0 ? void 0 : params.bridge) {
+            var el_bridge = document.getElementById(params.bridge);
+            if (el_bridge == null)
+                throw "Invalid bridge id.";
+            this.bridge = params.bridge;
         }
-        _super.prototype.render.apply(this, __spreadArray([element], params, false));
-        var sprites = this.element_sprites_container.getElementsByClassName(this.classNames.sprite);
-        for (var i = 0; i < sprites.length; i++) {
-            var sprite = sprites[i];
-            this.addSprite(sprite, true);
+        var element = document.getElementById(id);
+        element.innerHTML = '';
+        var canvas = document.createElement('canvas');
+        if (this.shape == 'rectangle') {
+            canvas.width = this.size * this.width;
+            canvas.height = this.size * this.height;
         }
-        if (this.element_sprites.length != this.tileHeight * this.tileWidth)
-            throw "The length(".concat(this.element_sprites.length, ") of sprites must be ").concat(this.tileHeight * this.tileWidth, ".");
-    };
-    TileMap.prototype.refresh = function () {
-        if (this.element == null)
-            throw "Use render before refresh.";
-        this.clearCanvas();
-        this.size = {
-            width: this.tileSize * this.tileWidth,
-            height: this.tileSize * this.tileHeight,
-        };
-        this.drawBackground();
-    };
-    TileMap.prototype.drawBackground = function () {
-        for (var y = 0; y < this.tileHeight; y++) {
-            for (var x = 0; x < this.tileWidth; x++) {
-                this.rectangle({
-                    x: x * this.tileSize,
-                    y: y * this.tileSize
-                }, {
-                    x: (x + 1) * this.tileSize,
-                    y: (y + 1) * this.tileSize
-                }, {
-                    fillColor: (y + x) % 2 == 0 ? '#808080' : '#C0C0C0',
-                });
-            }
+        else if (this.shape == 'hexagon') {
+            canvas.width = this.size * this.width + this.size / 2;
+            canvas.height = (this.size / 2 * Math.sqrt(3) / 2) * (this.height * 2 + 1);
         }
+        element.appendChild(canvas);
+        this.canvas = canvas;
+        this.fabricCanvas = new fabric.Canvas(canvas);
+        this.fabricCanvas.selection = false;
+        this.init(this.shape);
     };
-    TileMap.prototype.useMap = function (tileHtmlMap) {
-        this.tileHtmlMap = tileHtmlMap;
+    TileMap.prototype.setImage = function (x, y, color) {
+        var cell = this.cells[y][x];
+        cell.element.set('fill', color);
+        this.fabricCanvas.renderAll();
     };
-    TileMap.prototype.loadMap = function (map) {
-        if (this.element_sprites.length == 0) {
-            for (var y = 0; y < this.tileHeight; y++) {
-                for (var x = 0; x < this.tileWidth; x++) {
-                    this.addSprite(this.createSprite(), false);
+    TileMap.prototype.setColor = function (x, y, color) {
+        var cell = this.cells[y][x];
+        cell.element.set('fill', color);
+        this.fabricCanvas.renderAll();
+    };
+    TileMap.prototype.getColor = function (x, y) {
+        var cell = this.cells[y][x];
+        return cell.element.get('fill');
+    };
+    TileMap.prototype.resetColor = function (x, y) {
+        var cell = this.cells[y][x];
+        cell.element.set('fill', this.getOriginColor(x, y));
+        this.fabricCanvas.renderAll();
+    };
+    TileMap.prototype.getOriginColor = function (x, y) {
+        return '#C0C0C0';
+    };
+    TileMap.prototype.init = function (shape) {
+        var _this = this;
+        this.cells = [];
+        if (shape == 'rectangle') {
+            for (var y = 0; y < this.height; y++) {
+                var row = [];
+                var _loop_1 = function (x) {
+                    var rect = new fabric.Rect({
+                        left: x * this_1.size,
+                        top: y * this_1.size,
+                        fill: this_1.getOriginColor(y, x),
+                        width: this_1.size,
+                        height: this_1.size,
+                        selectable: false,
+                        hoverCursor: 'default'
+                    });
+                    var cell = { element: rect, y: y, x: x };
+                    rect.on('mousedown', function (e) {
+                        _this.mousedown(_this.bridge, 'cell:mousedown', { x: cell.x, y: cell.y });
+                    });
+                    this_1.fabricCanvas.add(rect);
+                    row.push(cell);
+                };
+                var this_1 = this;
+                for (var x = 0; x < this.width; x++) {
+                    _loop_1(x);
                 }
+                this.cells.push(row);
             }
         }
-        if (this.element_sprites.length != this.tileHeight * this.tileWidth)
-            throw "The length(".concat(this.element_sprites.length, ") of sprites must be ").concat(this.tileHeight * this.tileWidth, ".");
-        for (var y = 0; y < this.tileHeight; y++) {
-            for (var x = 0; x < this.tileWidth; x++) {
-                var div = this.element_sprites[y * this.tileHeight + x];
-                var value = map[y] ? map[y][x] : undefined;
-                div.innerHTML = value ? this.tileHtmlMap[value] : '';
-                div.style['top'] = "".concat(y * this.tileSize, "px");
-                div.style['left'] = "".concat(x * this.tileSize, "px");
-                div.style['width'] = "".concat(this.tileSize, "px");
-                div.style['height'] = "".concat(this.tileSize, "px");
+        else if (shape == 'hexagon') {
+            for (var y = 0; y < this.height; y++) {
+                var row = [];
+                var _loop_2 = function (x) {
+                    var height_d2 = this_2.size / 2 * Math.sqrt(3) / 2;
+                    var left = x * this_2.size + (y % 2 == 0 ? 0 : this_2.size / 2);
+                    var top_1 = y * this_2.size / 2 * Math.sqrt(3);
+                    var points = [
+                        [left + Math.floor(this_2.size / 2), top_1],
+                        [left + this_2.size, top_1 + height_d2],
+                        [left + this_2.size, top_1 + height_d2 * 2],
+                        [left + Math.floor(this_2.size / 2), top_1 + height_d2 * 3],
+                        [left, top_1 + height_d2 * 2],
+                        [left, top_1 + height_d2],
+                    ];
+                    var path = new fabric.Path("M ".concat(points.map(function (p) { return "".concat(p[0], " ").concat(p[1]); }).join(' L '), " z"));
+                    path.fill = this_2.getOriginColor(y, x);
+                    path.selectable = false;
+                    path.hoverCursor = 'default';
+                    var cell = { element: path, y: y, x: x };
+                    path.on('mousedown', function (e) {
+                        _this.mousedown(_this.bridge, 'cell:mousedown', { x: cell.x, y: cell.y });
+                    });
+                    this_2.fabricCanvas.add(path);
+                    row.push(cell);
+                };
+                var this_2 = this;
+                for (var x = 0; x < this.width; x++) {
+                    _loop_2(x);
+                }
+                this.cells.push(row);
             }
         }
     };
-    TileMap.prototype.createSprite = function () {
-        var div = document.createElement('div');
-        div.className = this.classNames.sprite;
-        return div;
+    TileMap.prototype.mousedown = function (id, event, detail) {
+        var _event = new CustomEvent(event, { detail: detail });
+        var element = document.getElementById(id);
+        element.dispatchEvent(_event);
     };
     return TileMap;
-}(HybridCanvas));
+}());
