@@ -5,39 +5,51 @@ using System.Reflection;
 namespace LINQPadKit
 {
     /// <summary>
-    /// Use <see cref="Mermaid"/> to render code.
+    /// Use <see cref="Prism"/>(Prismjs) to render code.
     /// </summary>
-    public class Mermaid : Pre, IEnumerable<string>
+    public class Prism : Pre, IEnumerable<string>
     {
-        public static readonly string Version = "10.4.0";
+        public static readonly string Version = "1.29.0";
 
         /// <summary>
-        /// Load scripts of <see cref="Mermaid"/>.
+        /// Load scripts of <see cref="Prism"/>.
         /// </summary>
         public static void Import()
         {
+            // https://cdnjs.com/libraries/prism
+
             Util.HtmlHead.AddScriptFromUri(Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                 "..",
                 "..",
                 "content",
                 "scripts",
-                $"mermaid@{Version}.min.js"
+                $"prism@{Version}.min.js"
             ));
 
-            Util.HtmlHead.AddScript("mermaid.initialize({ startOnLoad: false });");
+            Util.HtmlHead.AddStyles(File.ReadAllText(Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "..",
+                "..",
+                "content",
+                "scripts",
+                $"prism@{Version}.min.css"))
+            );
+
             Util.HtmlHead.AddScript("""
-mermaid.initialize({ startOnLoad: false });
-window.call_mermaid = function(id) {
-    mermaid.run({ querySelector: '#' + id });
+window.call_prism = function(language, code) {
+    return Prism.highlight(code, Prism.languages[language], language);
 }
 """
             );
         }
 
-        public Mermaid()
+        public string Language { get; }
+
+        public Prism(string language)
         {
-            CssClass = "mermaid";
+            Language = language;
+            CssClass = "prism";
         }
 
         private string _content;
@@ -47,8 +59,7 @@ window.call_mermaid = function(id) {
             set
             {
                 _content = value;
-                HtmlElement.InnerHtml = value;
-                HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
+                HtmlElement.InnerHtml = Util.InvokeScript(true, "call_prism", new[] { Language, value }) as string;
             }
         }
 
@@ -66,6 +77,5 @@ window.call_mermaid = function(id) {
         {
             return new[] { _content }.AsEnumerable().GetEnumerator();
         }
-
     }
 }

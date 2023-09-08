@@ -1,12 +1,6 @@
-﻿using LINQPad;
-using LINQPad.Controls;
+﻿using LINQPad.Controls;
 using LINQPad.Controls.Core;
 using LINQPadKit.Design;
-using NStandard;
-using System;
-using System.Drawing;
-using System.Text.Json;
-using System.Xml.Linq;
 
 namespace LINQPadKit
 {

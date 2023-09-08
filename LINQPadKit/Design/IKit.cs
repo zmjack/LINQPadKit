@@ -1,6 +1,4 @@
-﻿using LINQPad.Controls.Core;
-using System.Diagnostics;
-using System.Reflection;
+﻿using System.Diagnostics;
 
 namespace LINQPadKit.Design
 {
