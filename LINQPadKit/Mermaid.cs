@@ -29,6 +29,10 @@ namespace LINQPadKit
             Util.HtmlHead.AddScript("""
 mermaid.initialize({ startOnLoad: false });
 window.call_mermaid = function(id) {
+    var el = document.getElementById(id);
+    if (el.hasAttribute('data-processed')) {
+        el.removeAttribute('data-processed');
+    }
     mermaid.run({ querySelector: '#' + id });
 }
 """
