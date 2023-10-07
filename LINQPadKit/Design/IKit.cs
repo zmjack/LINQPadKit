@@ -4,25 +4,27 @@ namespace LINQPadKit.Design;
 
 public interface IKit
 {
-    abstract static void Import();
     string Instance { get; }
     bool IsRendered { get; }
 
     void InitailizeInstance();
     void Render();
+}
 
-    Task InitailizeAsync()
+public static class IKitExtensions
+{
+    public static Task InitailizeAsync(this IKit @this)
     {
         return Task.Run(() =>
         {
-            Wait(() => IsRendered);
-            InitailizeInstance();
+            Wait(() => @this.IsRendered);
+            @this.InitailizeInstance();
         });
     }
 
-    public void WaitForReady() => Wait(() => Instance is not null);
+    public static void WaitForReady(this IKit @this) => Wait(() => @this.Instance is not null);
 
-    void Wait(Func<bool> predicate)
+    private static void Wait(Func<bool> predicate)
     {
         if (predicate()) return;
 

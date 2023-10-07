@@ -65,7 +65,7 @@ public partial class TileMap : Div, IKit
         });
         Children.Add(_bridge);
 
-        (this as IKit).InitailizeAsync();
+        this.InitailizeAsync();
     }
 
     public void InitailizeInstance()
@@ -77,8 +77,7 @@ public partial class TileMap : Div, IKit
 
     public void Render()
     {
-        (this as IKit).WaitForReady();
-
+        this.WaitForReady();
         HtmlElement.InvokeScript(false, "eval", $"{Instance}.render('{_canvas.HtmlElement.ID}', {{ bridge: '{_bridge.HtmlElement.ID}' }});");
     }
 
