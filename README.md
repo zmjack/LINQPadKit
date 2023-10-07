@@ -1,5 +1,5 @@
 # LINQPadKit
-Extension Toolkit for LINQPad.
+Extension Toolkit for **LINQPad**.
 
 <br/>
 
@@ -29,7 +29,7 @@ Console.WriteLine("Render code in LINQPad !");
 ```csharp
 void Main()
 {
-    Mermaid.Import();    
+    Mermaid.Import();
     new Mermaid
     {
 """
