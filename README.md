@@ -8,13 +8,13 @@ Extension Toolkit for LINQPad.
 ```csharp
 void Main()
 {
-	Prism.Import();    
-	new Prism("csharp")
-	{
+    Prism.Import();    
+    new Prism("csharp")
+    {
 """
 Console.WriteLine("Render code in LINQPad !");
 """
-	}.Dump();
+    }.Dump();
 }
 ```
 
@@ -29,15 +29,15 @@ Console.WriteLine("Render code in LINQPad !");
 ```csharp
 void Main()
 {
-	Mermaid.Import();    
-	new Mermaid
-	{
+    Mermaid.Import();    
+    new Mermaid
+    {
 """
 graph TB
 A --> B
 A --> C
 """
-	}.Dump("Mermaid");
+    }.Dump("Mermaid");
 }
 ```
 
@@ -52,23 +52,23 @@ A --> C
 ```csharp
 void Main()
 {
-	Mermaid.Import();
-	new Mermaid.TreeGraph
-	{
-		new TreeNode("A")
-		{
-			new TreeNode("B")
-			{
-				new TreeNode("D"),
-				null,
-			},
-			new TreeNode("C")
-			{
-				null,
-				new TreeNode("E"),
-			},
-		}
-	}.Dump("Mermaid.TreeGraph");
+    Mermaid.Import();
+    new Mermaid.TreeGraph
+    {
+        new TreeNode("A")
+        {
+            new TreeNode("B")
+            {
+                new TreeNode("D"),
+                null,
+            },
+            new TreeNode("C")
+            {
+                null,
+                new TreeNode("E"),
+            },
+        }
+    }.Dump("Mermaid.TreeGraph");
 }
 ```
 
