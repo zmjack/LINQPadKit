@@ -1,10 +1,9 @@
 ﻿using NStandard;
 
-namespace LINQPadKit.Internal
+namespace LINQPadKit.Internal;
+
+internal class StateHandler
 {
-    internal class StateHandler
-    {
-        public State.ValueReceivedHandler<object> Changed;
-        public State.ValueReceivedHandler<object> Updating;
-    }
+    public State.ValueReceivedHandler<object> Changed;
+    public State.ValueReceivedHandler<object> Updating;
 }

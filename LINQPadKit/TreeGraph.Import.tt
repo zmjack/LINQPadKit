@@ -1,6 +1,0 @@
-﻿<#@ include file="Render.t4" #><##>
-<##>
-<#= Render(@"T4\Kit.t4", new Dictionary<string, string>
-{
-	["ClassName"] = "TreeGraph",
-}) #>

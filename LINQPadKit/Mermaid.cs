@@ -2,31 +2,31 @@
 using System.Collections;
 using System.Reflection;
 
-namespace LINQPadKit
+namespace LINQPadKit;
+
+/// <summary>
+/// Use <see cref="Mermaid"/> to render code.
+/// </summary>
+public partial class Mermaid : Pre, IEnumerable<string>
 {
+    public static readonly string Version = "10.4.0";
+
     /// <summary>
-    /// Use <see cref="Mermaid"/> to render code.
+    /// Load scripts of <see cref="Mermaid"/>.
     /// </summary>
-    public class Mermaid : Pre, IEnumerable<string>
+    public static void Import()
     {
-        public static readonly string Version = "10.4.0";
+        Util.HtmlHead.AddScriptFromUri(Path.Combine(
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+            "..",
+            "..",
+            "content",
+            "scripts",
+            $"mermaid@{Version}.min.js"
+        ));
 
-        /// <summary>
-        /// Load scripts of <see cref="Mermaid"/>.
-        /// </summary>
-        public static void Import()
-        {
-            Util.HtmlHead.AddScriptFromUri(Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                "..",
-                "..",
-                "content",
-                "scripts",
-                $"mermaid@{Version}.min.js"
-            ));
-
-            Util.HtmlHead.AddScript("mermaid.initialize({ startOnLoad: false });");
-            Util.HtmlHead.AddScript("""
+        Util.HtmlHead.AddScript("mermaid.initialize({ startOnLoad: false });");
+        Util.HtmlHead.AddScript("""
 mermaid.initialize({ startOnLoad: false });
 window.call_mermaid = function(id) {
     var el = document.getElementById(id);
@@ -36,40 +36,39 @@ window.call_mermaid = function(id) {
     mermaid.run({ querySelector: '#' + id });
 }
 """
-            );
-        }
-
-        public Mermaid()
-        {
-            CssClass = "mermaid";
-        }
-
-        private string _content;
-        public string Content
-        {
-            get => _content;
-            set
-            {
-                _content = value;
-                HtmlElement.InnerHtml = value;
-                HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
-            }
-        }
-
-        public void Add(string content)
-        {
-            Content = content;
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return new[] { _content }.GetEnumerator();
-        }
-
-        IEnumerator<string> IEnumerable<string>.GetEnumerator()
-        {
-            return new[] { _content }.AsEnumerable().GetEnumerator();
-        }
-
+        );
     }
+
+    public Mermaid()
+    {
+        CssClass = "mermaid";
+    }
+
+    private string _content;
+    public string Content
+    {
+        get => _content;
+        set
+        {
+            _content = value;
+            HtmlElement.InnerHtml = value;
+            HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
+        }
+    }
+
+    public virtual void Add(string content)
+    {
+        Content = content;
+    }
+
+    public IEnumerator GetEnumerator()
+    {
+        return new[] { _content }.GetEnumerator();
+    }
+
+    IEnumerator<string> IEnumerable<string>.GetEnumerator()
+    {
+        return new[] { _content }.AsEnumerable().GetEnumerator();
+    }
+
 }

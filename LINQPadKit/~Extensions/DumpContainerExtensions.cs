@@ -3,48 +3,47 @@ using LINQPadKit.Internal;
 using NStandard;
 using System.ComponentModel;
 
-namespace LINQPadKit
+namespace LINQPadKit;
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+public static class DumpContainerExtensions
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class DumpContainerExtensions
+    private static readonly Dictionary<StructTuple<DumpContainer, IState>, StateHandler> _handlerMap = new();
+
+    public static DumpContainer Bind(this DumpContainer @this, IState state)
     {
-        private static readonly Dictionary<StructTuple<DumpContainer, IState>, StateHandler> _handlerMap = new();
+        var key = StructTuple.Create(@this, state);
 
-        public static DumpContainer Bind(this DumpContainer @this, IState state)
+        if (!_handlerMap.ContainsKey(key))
         {
-            var key = StructTuple.Create(@this, state);
-
-            if (!_handlerMap.ContainsKey(key))
+            var received = new State.ValueReceivedHandler<object>(value =>
             {
-                var received = new State.ValueReceivedHandler<object>(value =>
-                {
-                    @this.Refresh();
-                });
+                @this.Refresh();
+            });
 
-                state.Changed += received;
-                state.Updating += received;
-                _handlerMap.Add(key, new StateHandler
-                {
-                    Changed = received,
-                    Updating = received,
-                });
-            }
-
-            @this.Content = state.Value;
-            return @this;
+            state.Changed += received;
+            state.Updating += received;
+            _handlerMap.Add(key, new StateHandler
+            {
+                Changed = received,
+                Updating = received,
+            });
         }
 
-        public static DumpContainer Unbind(this DumpContainer @this, IState state)
+        @this.Content = state.Value;
+        return @this;
+    }
+
+    public static DumpContainer Unbind(this DumpContainer @this, IState state)
+    {
+        var key = StructTuple.Create(@this, state);
+
+        if (_handlerMap.TryGetValue(key, out var handler))
         {
-            var key = StructTuple.Create(@this, state);
-
-            if (_handlerMap.TryGetValue(key, out var handler))
-            {
-                state.Changed -= handler.Changed;
-                state.Updating -= handler.Updating;
-            }
-
-            return @this;
+            state.Changed -= handler.Changed;
+            state.Updating -= handler.Updating;
         }
+
+        return @this;
     }
 }

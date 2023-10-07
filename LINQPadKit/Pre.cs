@@ -1,11 +1,10 @@
 ﻿using LINQPad.Controls;
 
-namespace LINQPadKit
+namespace LINQPadKit;
+
+public class Pre : Control
 {
-    public class Pre : Control
+    public Pre() : base("pre")
     {
-        public Pre() : base("pre")
-        {
-        }
     }
 }

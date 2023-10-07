@@ -3,49 +3,48 @@ using LINQPadKit.Internal;
 using NStandard;
 using System.ComponentModel;
 
-namespace LINQPadKit
+namespace LINQPadKit;
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+public static class SpanExtensions
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class SpanExtensions
+    private static readonly Dictionary<StructTuple<Span, IState>, StateHandler> _handlerMap = new();
+
+    public static Span Bind(this Span @this, IState state)
     {
-        private static readonly Dictionary<StructTuple<Span, IState>, StateHandler> _handlerMap = new();
+        var key = StructTuple.Create(@this, state);
 
-        public static Span Bind(this Span @this, IState state)
+        if (!_handlerMap.ContainsKey(key))
         {
-            var key = StructTuple.Create(@this, state);
-
-            if (!_handlerMap.ContainsKey(key))
+            var received = new State.ValueReceivedHandler<object>(value =>
             {
-                var received = new State.ValueReceivedHandler<object>(value =>
-                {
-                    @this.Text = state.Value?.ToString();
-                });
+                @this.Text = state.Value?.ToString();
+            });
 
-                state.Changed += received;
-                state.Updating += received;
+            state.Changed += received;
+            state.Updating += received;
 
-                _handlerMap.Add(key, new StateHandler
-                {
-                    Changed = received,
-                    Updating = received,
-                });
-            }
-
-            @this.Text = state.Value?.ToString();
-            return @this;
+            _handlerMap.Add(key, new StateHandler
+            {
+                Changed = received,
+                Updating = received,
+            });
         }
 
-        public static Span Unbind(this Span @this, IState state)
+        @this.Text = state.Value?.ToString();
+        return @this;
+    }
+
+    public static Span Unbind(this Span @this, IState state)
+    {
+        var key = StructTuple.Create(@this, state);
+
+        if (_handlerMap.TryGetValue(key, out var handler))
         {
-            var key = StructTuple.Create(@this, state);
-
-            if (_handlerMap.TryGetValue(key, out var handler))
-            {
-                state.Changed -= handler.Changed;
-                state.Updating += handler.Updating;
-            }
-
-            return @this;
+            state.Changed -= handler.Changed;
+            state.Updating += handler.Updating;
         }
+
+        return @this;
     }
 }

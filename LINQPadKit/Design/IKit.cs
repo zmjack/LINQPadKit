@@ -1,39 +1,37 @@
 ﻿using System.Diagnostics;
 
-namespace LINQPadKit.Design
+namespace LINQPadKit.Design;
+
+public interface IKit
 {
-    public interface IKit
+    abstract static void Import();
+    string Instance { get; }
+    bool IsRendered { get; }
+
+    void InitailizeInstance();
+    void Render();
+
+    Task InitailizeAsync()
     {
-        abstract static void Import();
-        string Instance { get; }
-        bool IsRendered { get; }
-
-        void InitailizeInstance();
-        void Render();
-
-        Task InitailizeAsync()
+        return Task.Run(() =>
         {
-            return Task.Run(() =>
-            {
-                Wait(() => IsRendered);
-                InitailizeInstance();
-            });
-        }
-
-        public void WaitForReady() => Wait(() => Instance is not null);
-
-        void Wait(Func<bool> predicate)
-        {
-            if (predicate()) return;
-
-            var stop = new Stopwatch();
-            stop.Start();
-            while (!predicate())
-            {
-                if (stop.Elapsed > TimeSpan.FromSeconds(5)) throw new TimeoutException();
-            }
-            stop.Stop();
-        }
+            Wait(() => IsRendered);
+            InitailizeInstance();
+        });
     }
 
+    public void WaitForReady() => Wait(() => Instance is not null);
+
+    void Wait(Func<bool> predicate)
+    {
+        if (predicate()) return;
+
+        var stop = new Stopwatch();
+        stop.Start();
+        while (!predicate())
+        {
+            if (stop.Elapsed > TimeSpan.FromSeconds(5)) throw new TimeoutException();
+        }
+        stop.Stop();
+    }
 }
