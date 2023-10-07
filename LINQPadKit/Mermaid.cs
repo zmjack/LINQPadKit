@@ -25,7 +25,6 @@ public partial class Mermaid : Pre, IEnumerable<string>
             $"mermaid@{Version}.min.js"
         ));
 
-        Util.HtmlHead.AddScript("mermaid.initialize({ startOnLoad: false });");
         Util.HtmlHead.AddScript("""
 mermaid.initialize({ startOnLoad: false });
 window.call_mermaid = function(id) {
@@ -52,8 +51,13 @@ window.call_mermaid = function(id) {
         {
             _content = value;
             HtmlElement.InnerHtml = value;
-            HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
         }
+    }
+
+    protected override void OnRendering(EventArgs e)
+    {
+        HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
+        base.OnRendering(e);
     }
 
     public virtual void Add(string content)
