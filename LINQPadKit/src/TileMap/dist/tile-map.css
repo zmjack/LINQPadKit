@@ -1,0 +1,11 @@
+.tile-map {
+    position: relative;
+}
+
+.tile-map-sprite {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1px solid orange;
+    padding: 10px;
+    text-align: center;
+}

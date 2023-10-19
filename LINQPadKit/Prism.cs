@@ -1,40 +1,15 @@
 ﻿using LINQPad;
 using System.Collections;
-using System.Reflection;
 
 namespace LINQPadKit;
 
-/// <summary>
-/// Use <see cref="Prism"/>(Prismjs) to render code.
-/// </summary>
 public class Prism : Pre, IEnumerable<string>
 {
-    public static readonly string Version = "1.29.0";
-
-    /// <summary>
-    /// Load scripts of <see cref="Prism"/>.
-    /// </summary>
     public static void Import()
     {
         // https://cdnjs.com/libraries/prism
-
-        Util.HtmlHead.AddScriptFromUri(Path.Combine(
-            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-            "..",
-            "..",
-            "content",
-            "scripts",
-            $"prism@{Version}.min.js"
-        ));
-
-        Util.HtmlHead.AddStyles(File.ReadAllText(Path.Combine(
-            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-            "..",
-            "..",
-            "content",
-            "scripts",
-            $"prism@{Version}.min.css"))
-        );
+        KitUtil.Load("package", "dist", $"prism@1.29.0.min.css");
+        KitUtil.Load("package", "dist", $"prism@1.29.0.min.js");
 
         Util.HtmlHead.AddScript("""
 window.call_prism = function(language, code) {

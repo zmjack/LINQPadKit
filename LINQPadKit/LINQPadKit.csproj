@@ -11,7 +11,7 @@
     <Authors>zmjack</Authors>
     <Company>nstandard.net</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.2.0</Version>
+    <Version>0.2.1-alpha4</Version>
     <Description>Extension Toolkit for LINQPad.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
@@ -26,16 +26,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="scripts\cdn.jsdelivr.net_npm_mermaid%4010.4.0_dist_mermaid.min.js" />
-    <None Remove="scripts\mermaid%4010.4.0.min.js" />
-    <None Remove="scripts\prism%401.29.0.min.css" />
-    <None Remove="scripts\prism@1.29.0.min.js" />
+    <None Remove="src\fabric%405.3.1.min.js" />
+    <None Remove="src\mermaid%4010.4.0.min.js" />
+    <None Remove="src\prism%401.29.0.min.css" />
+    <None Remove="src\prism%401.29.0.min.js" />
+    <None Remove="src\TileMap\dist\tile-map.css" />
+    <None Remove="src\TileMap\dist\tile-map.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="scripts\mermaid@10.4.0.min.js" />
-    <Content Include="scripts\prism%401.29.0.min.js" />
-    <Content Include="scripts\prism@1.29.0.min.css" />
+    <Content Include="src\package\dist\fabric%405.3.1.min.js" />
+    <Content Include="src\package\dist\mermaid%4010.4.0.min.js" />
+    <Content Include="src\package\dist\prism%401.29.0.min.css" />
+    <Content Include="src\package\dist\prism%401.29.0.min.js" />
+    <Content Include="src\TileMap\dist\tile-map.css" />
+    <Content Include="src\TileMap\dist\tile-map.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,10 +58,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TileMap.Import.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TileMap.Import.cs</LastGenOutput>
-    </None>
     <None Update="TreeGraph.Import.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TreeGraph.Import.cs</LastGenOutput>
@@ -68,11 +69,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="TileMap.Import.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TileMap.Import.tt</DependentUpon>
-    </Compile>
     <Compile Update="TreeGraph.Import.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

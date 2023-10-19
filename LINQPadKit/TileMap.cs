@@ -1,17 +1,22 @@
 ﻿using LINQPad.Controls;
 using LINQPad.Controls.Core;
-using LINQPadKit.Design;
 
 namespace LINQPadKit;
 
-[Obsolete("Designing.")]
-public partial class TileMap : Div, IKit
+public partial class TileMap : Div
 {
+    public static void Import()
+    {
+        KitUtil.Load("package", "dist", $"fabric@5.3.1.min.js");
+        KitUtil.Load("TileMap", "dist", $"tile-map.css");
+        KitUtil.Load("TileMap", "dist", $"tile-map.js");
+    }
+
     public enum Shape
     {
-        None,
-        Rectangle,
-        Hexagon,
+        None = 0,
+        Rectangle = 1,
+        Hexagon = 2,
     }
 
     public string Instance { get; set; }
@@ -64,21 +69,16 @@ public partial class TileMap : Div, IKit
             });
         });
         Children.Add(_bridge);
-
-        this.InitailizeAsync();
     }
 
-    public void InitailizeInstance()
+    protected override void OnRendering(EventArgs e)
     {
         var instance = $"kit_{nameof(TileMap)}_{HtmlElement.ID}";
-        HtmlElement.InvokeScript(false, "eval", $"var {instance} = new {nameof(TileMap)}('{_shape}', {_tileSize}, {_tileWidth}, {_tileHeight});");
         Instance = instance;
-    }
 
-    public void Render()
-    {
-        this.WaitForReady();
-        HtmlElement.InvokeScript(false, "eval", $"{Instance}.render('{_canvas.HtmlElement.ID}', {{ bridge: '{_bridge.HtmlElement.ID}' }});");
+        HtmlElement.InvokeScript(false, "eval", $"var {instance} = new {nameof(TileMap)}('{_shape}', {_tileSize}, {_tileWidth}, {_tileHeight});");
+
+        HtmlElement.InvokeScript(false, "eval", $"{Instance}.render('{_canvas.HtmlElement.ID}', '{_bridge.HtmlElement.ID}');");
     }
 
     public string? GetColor(int x, int y)

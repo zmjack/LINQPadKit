@@ -1,29 +1,13 @@
 ﻿using LINQPad;
 using System.Collections;
-using System.Reflection;
 
 namespace LINQPadKit;
 
-/// <summary>
-/// Use <see cref="Mermaid"/> to render code.
-/// </summary>
 public partial class Mermaid : Pre, IEnumerable<string>
 {
-    public static readonly string Version = "10.4.0";
-
-    /// <summary>
-    /// Load scripts of <see cref="Mermaid"/>.
-    /// </summary>
     public static void Import()
     {
-        Util.HtmlHead.AddScriptFromUri(Path.Combine(
-            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-            "..",
-            "..",
-            "content",
-            "scripts",
-            $"mermaid@{Version}.min.js"
-        ));
+        KitUtil.Load("package", "dist", $"mermaid@10.4.0.min.js");
 
         Util.HtmlHead.AddScript("""
 mermaid.initialize({ startOnLoad: false });
@@ -57,7 +41,6 @@ window.call_mermaid = function(id) {
     protected override void OnRendering(EventArgs e)
     {
         HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
-        base.OnRendering(e);
     }
 
     public virtual void Add(string content)
