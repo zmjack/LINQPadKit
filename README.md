@@ -3,6 +3,52 @@ Extension Toolkit for **LINQPad**.
 
 <br/>
 
+## Layout
+
+```csharp
+new Vertical
+{
+    "Top",
+    "Bottom"
+}.Dump();
+```
+
+>Top<br/>
+>
+>Bottom
+
+```csharp
+new Horizontal
+{
+    "Left",
+    "Right"
+}.Dump();
+```
+
+> Left Right
+
+<br/>
+
+## Data binding
+
+```csharp
+var a = State.Use(1);
+var b = State.Use(2);
+
+new Horizontal
+{
+    new TextBox(width: "50px").Bind(a),
+    "+",
+    new TextBox(width: "50px").Bind(b),
+    "=",
+    new Span().Bind(State.From(() => a + b)),
+}.Dump("Calculator");
+```
+
+> 1 + 2 = 3
+
+<br/>
+
 ## Prism
 
 ```csharp

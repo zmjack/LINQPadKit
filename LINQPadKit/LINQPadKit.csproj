@@ -11,7 +11,7 @@
     <Authors>zmjack</Authors>
     <Company>nstandard.net</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
     <Description>Extension Toolkit for LINQPad.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
@@ -45,7 +45,7 @@
 
   <ItemGroup>
     <PackageReference Include="LINQPad.Runtime" Version="7.7.15" />
-    <PackageReference Include="NStandard" Version="0.37.0" />
+    <PackageReference Include="NStandard" Version="0.48.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,11 +53,32 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="Horizontal.IDump.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Horizontal.IDump.tt</DependentUpon>
+    </None>
     <None Include="Mermaid.Direction.cs" />
     <None Include="Mermaid.TreeGraph.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="T4\IDump.t4">
+      <Generator></Generator>
+    </None>
+    <None Update="Vertical.IDump.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Vertical.IDump.cs</LastGenOutput>
+    </None>
+    <None Update="Horizontal.IDump.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Horizontal.IDump.cs</LastGenOutput>
+    </None>
+    <None Update="TextTemplate1.txt">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TextTemplate1.tt</DependentUpon>
+    </None>
     <None Update="TreeGraph.Import.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TreeGraph.Import.cs</LastGenOutput>
@@ -69,10 +90,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Horizontal.IDump.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Horizontal.IDump.tt</DependentUpon>
+    </Compile>
     <Compile Update="TreeGraph.Import.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TreeGraph.Import.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Vertical.IDump.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Vertical.IDump.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
