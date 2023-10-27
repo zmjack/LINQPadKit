@@ -2,9 +2,11 @@
 type Shape = 'rectangle' | 'hexagon';
 
 interface Cell {
-    element: fabric.Object,
-    x: number,
-    y: number,
+    element: fabric.Object;
+    x: number;
+    y: number;
+    color?: string;
+    image?: string;
 }
 
 class TileMap {
@@ -12,60 +14,63 @@ class TileMap {
     canvas?: HTMLCanvasElement;
     fabricCanvas?: fabric.Canvas;
     cells: Cell[][] = [];
+    cellHeight: number;
 
-    onCellMouseDown: ((args: { x: number, y: number }) => void) | null = null;
+    onCellMouseDown: ((sender: TileMap, args: { x: number, y: number }) => void) | null = null;
+    onCellColorChange: ((sender: TileMap, args: { color: string }) => void) | null = null;
+    onImageChange: ((sender: TileMap, args: { image: string }) => void) | null = null;
+    onReady: ((sender: TileMap, args: { rows: number, cols: number }) => void) | null = null;
 
-    constructor(public shape: Shape, public size: number, public width: number, public height: number) {
+    constructor(public shape: Shape, public cellWidth: number, public rows: number, public cols: number) {
+        this.cellHeight = this.cellWidth / 2 * Math.sqrt(3) / 2 * 3;
     }
 
     render(id: string, net_bridge?: string) {
         this.net_bridge = net_bridge;
 
-        let element = document.getElementById(id);
+        const element = document.getElementById(id);
         if (element == null) throw "No element found.";
 
         element.innerHTML = '';
-        let canvas = document.createElement('canvas');
+        const canvas = document.createElement('canvas');
         if (canvas == null) throw "No canvas found.";
 
         if (this.shape == 'rectangle') {
-            canvas.width = this.size * this.width;
-            canvas.height = this.size * this.height;
+            canvas.width = this.cellWidth * this.cols;
+            canvas.height = this.cellWidth * this.rows;
         }
         else if (this.shape == 'hexagon') {
-            canvas.width = this.size * this.width + this.size / 2;
-            canvas.height = (this.size / 2 * Math.sqrt(3) / 2) * (this.height * 2 + 1);
+            canvas.width = this.cellWidth * this.cols + this.cellWidth / 2;
+            canvas.height = (this.cellWidth / 2 * Math.sqrt(3) / 2) * (this.rows * 2 + 1);
         }
         element.appendChild(canvas);
         this.canvas = canvas;
         this.fabricCanvas = new fabric.Canvas(canvas);
         this.fabricCanvas.selection = false;
         this.init(this.shape);
+        this.ready({ rows: this.rows, cols: this.cols });
     }
 
-    init(shape) {
+    private init(shape) {
         if (this.fabricCanvas == null) throw "No fabric canvas found."
 
         this.cells = [];
         if (shape == 'rectangle') {
-            for (let y = 0; y < this.height; y++) {
-                let row: Cell[] = [];
-                for (let x = 0; x < this.width; x++) {
-                    let rect = new fabric.Rect({
-                        left: x * this.size,
-                        top: y * this.size,
+            for (let y = 0; y < this.rows; y++) {
+                const row: Cell[] = [];
+                for (let x = 0; x < this.cols; x++) {
+                    const rect = new fabric.Rect({
+                        left: x * this.cellWidth,
+                        top: y * this.cellWidth,
                         fill: this.getOriginColor(y, x),
-                        width: this.size,
-                        height: this.size,
+                        width: this.cellWidth,
+                        height: this.cellWidth,
                         selectable: false,
                         hoverCursor: 'default'
                     });
-                    let cell: Cell = { element: rect, y: y, x: x };
+                    const cell: Cell = { element: rect, y: y, x: x };
                     rect.on('mousedown', e => {
-                        this.mousedown(this.net_bridge, 'cell:mousedown', {
-                            x: cell.x,
-                            y: cell.y
-                        });
+                        this.mouseDown({ x: cell.x, y: cell.y });
                     });
                     this.fabricCanvas.add(rect);
                     row.push(cell);
@@ -74,34 +79,33 @@ class TileMap {
             }
         }
         else if (shape == 'hexagon') {
-            for (let y = 0; y < this.height; y++) {
-                let row: Cell[] = [];
-                for (let x = 0; x < this.width; x++) {
-                    let height = this.size / 2 * Math.sqrt(3) / 2;
-                    let left = x * this.size + (y % 2 == 0 ? 0 : this.size / 2);
-                    let top = y * this.size / 2 * Math.sqrt(3);
-                    let points = [
-                        [left + Math.floor(this.size / 2), top],
-                        [left + this.size, top + height],
-                        [left + this.size, top + height * 2],
-                        [left + Math.floor(this.size / 2), top + height * 3],
+            for (let y = 0; y < this.rows; y++) {
+                const row: Cell[] = [];
+                for (let x = 0; x < this.cols; x++) {
+                    const height = this.cellWidth / 2 * Math.sqrt(3) / 2;
+                    const left = x * this.cellWidth + (y % 2 == 0 ? 0 : this.cellWidth / 2);
+                    const top = y * this.cellWidth / 2 * Math.sqrt(3);
+                    const points = [
+                        [left + Math.floor(this.cellWidth / 2), top],
+                        [left + this.cellWidth, top + height],
+                        [left + this.cellWidth, top + height * 2],
+                        [left + Math.floor(this.cellWidth / 2), top + height * 3],
                         [left, top + height * 2],
                         [left, top + height],
                     ];
 
-                    let path = new fabric.Path(`M ${points.map(p => `${p[0]} ${p[1]}`).join(' L ')} z`);
+                    const path = new fabric.Path(`M ${points.map(p => `${p[0]} ${p[1]}`).join(' L ')} z`);
                     path.fill = this.getOriginColor(y, x);
                     path.selectable = false;
                     path.hoverCursor = 'default';
 
-                    let cell: Cell = { element: path, y: y, x: x };
-                    console.log(cell);
+                    const cell: Cell = {
+                        element: path,
+                        y, x,
+                        color: path.fill,
+                    };
                     path.on('mousedown', e => {
-                        const args = { x: cell.x, y: cell.y };
-                        if (this.net_bridge) {
-                            this.mousedown(this.net_bridge, 'cell:mousedown', args);
-                        }
-                        this.onCellMouseDown?.(args);
+                        this.mouseDown({ x: cell.x, y: cell.y });
                     });
                     this.fabricCanvas.add(path);
                     row.push(cell);
@@ -111,43 +115,84 @@ class TileMap {
         }
     };
 
-    setImage(x, y, color) {
-        let cell = this.cells[y][x];
-        cell.element.set('fill', color);
+    setImage(x, y, image: string) {
+        var img = new Image();
+        img.src = image;
+        img.onload = () => {
+            if (this.fabricCanvas == null) throw "No fabric canvas found."
 
-        if (this.fabricCanvas == null) throw "No fabric canvas found."
-        this.fabricCanvas.renderAll();
+            var pattern = new fabric.Pattern({
+                source: img,
+                repeat: 'no-repeat',
+                offsetX: (this.cellWidth / 2) - (img.width / 2),
+                offsetY: (this.cellHeight / 2) - (img.height / 2)
+            });
+
+            const cell = this.cells[y][x];
+            cell.color = undefined;
+            cell.image = image;
+            cell.element.set('fill', pattern);
+            this.fabricCanvas.renderAll();
+            this.imageChange?.({ x, y, image });
+        };
+    }
+
+    getImage(x, y) {
+        const cell = this.cells[y][x];
+        return cell.image;
     }
 
     setColor(x, y, color) {
-        let cell = this.cells[y][x];
-        cell.element.set('fill', color);
-
         if (this.fabricCanvas == null) throw "No fabric canvas found."
+
+        const cell = this.cells[y][x];
+        cell.image = undefined;
+        cell.color = color;
+        cell.element.set('fill', color);
         this.fabricCanvas.renderAll();
+        this.colorChange?.({ x, y, color });
     }
 
     getColor(x, y) {
-        let cell = this.cells[y][x];
-        return cell.element.get('fill');
+        const cell = this.cells[y][x];
+        return cell.color;
     }
 
-    resetColor(x, y) {
-        let cell = this.cells[y][x];
-        cell.element.set('fill', this.getOriginColor(x, y));
-
-        if (this.fabricCanvas == null) throw "No fabric canvas found."
-        this.fabricCanvas.renderAll();
+    resetCell(x, y) {
+        const color = this.getOriginColor(x, y);
+        this.setColor(x, y, color);
     }
 
     getOriginColor(x, y) {
         return '#C0C0C0';
     }
 
-    mousedown(id, event, detail) {
-        let _event = new CustomEvent(event, { detail: detail });
-        let element = document.getElementById(id);
-        if (element == null) throw "No element found."
-        element.dispatchEvent(_event);
+    private callBridge(name: string, detail) {
+        if (this.net_bridge) {
+            const element = document.getElementById(this.net_bridge);
+            if (element == null) throw "No element found."
+            const _event = new CustomEvent(name, { detail });
+            element.dispatchEvent(_event);
+        }
+    }
+
+    private mouseDown(detail: { x: number, y: number }) {
+        this.onCellMouseDown?.(this, detail);
+        this.callBridge('cell:mouseDown', detail);
+    }
+
+    private colorChange(detail: { x: number, y: number, color: string }) {
+        this.onCellColorChange?.(this, detail);
+        this.callBridge('cell:colorChange', detail);
+    }
+
+    private imageChange(detail: { x: number, y: number, image: string }) {
+        this.onImageChange?.(this, detail);
+        this.callBridge('cell:imageChange', detail);
+    }
+
+    private ready(detail: { rows: number, cols: number }) {
+        this.onReady?.(this, detail);
+        this.callBridge('ready', detail);
     }
 }

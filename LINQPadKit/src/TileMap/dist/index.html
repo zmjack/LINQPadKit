@@ -6,13 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-    <script src="../../dist/fabric@5.3.1.min.js"></script>
-    <link href="./tile-map.css" type="text/css" rel="stylesheet" />
-    <script src="./tile-map.js"></script>
+    <script src="fabric@5.3.1.min.js"></script>
+    <link href="tile-map.css" type="text/css" rel="stylesheet" />
+    <script src="tile-map.js"></script>
+
+    <style>
+        #output {
+            position: fixed;
+            width: 100%;
+            height: 20%;
+            left: 0;
+            right: 0;
+            bottom: 6px;
+            border: 2px solid rgb(192, 192, 192);
+            background-color: rgba(192, 192, 192, 0.5);
+            box-sizing: border-box;
+            overflow-y: scroll;
+            font-size: 14px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #clear {
+            position: fixed;
+            right: 20px;
+            bottom: 10px;
+        }
+    </style>
 </head>
 
 <body>
     <div id="panel"></div>
+    <div id="output"></div>
+    <button id="clear" type="button" onclick="document.getElementById('output').innerHTML=''"> Clear </button>
     <script src="./app.js"></script>
 </body>
 

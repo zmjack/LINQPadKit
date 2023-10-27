@@ -11,6 +11,13 @@ public class Prism : Pre, IEnumerable<string>
         KitUtil.Load("package", "dist", $"prism@1.29.0.min.css");
         KitUtil.Load("package", "dist", $"prism@1.29.0.min.js");
 
+        Util.HtmlHead.AddStyles("""
+.prism {
+  white-space: pre-wrap;
+}
+"""
+        );
+
         Util.HtmlHead.AddScript("""
 window.call_prism = function(language, code) {
     return Prism.highlight(code, Prism.languages[language], language);
