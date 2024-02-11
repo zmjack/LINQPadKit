@@ -26,7 +26,7 @@ window.call_katex = function(id) {
 
     public KaTex()
     {
-        CssClass = "mermaid";
+        CssClass = "katex";
     }
 
     private string _content;
@@ -37,13 +37,8 @@ window.call_katex = function(id) {
         {
             _content = value;
             HtmlElement.InnerHtml = value;
-            OnRendering(null);
+            HtmlElement.InvokeScript(false, "call_katex", HtmlElement.ID);
         }
-    }
-
-    protected override void OnRendering(EventArgs e)
-    {
-        HtmlElement.InvokeScript(false, "call_katex", HtmlElement.ID);
     }
 
     public virtual void Add(string content)

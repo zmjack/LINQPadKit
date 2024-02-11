@@ -132,5 +132,24 @@ linkStyle 2 stroke-width:0px
 linkStyle 4 stroke-width:0px
 ```
 
+### KaText
+
+```csharp
+void Main()
+{
+    KaTex.Import();
+	var a = new KaTex
+	{
+		"c = \\pm\\sqrt{a^2 + b^2}"
+	}.Dump();
+}
+```
+
+$$
+c = \pm\sqrt{a^2 + b^2}
+$$
+
+
+
 
 

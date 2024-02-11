@@ -35,13 +35,8 @@ window.call_mermaid = function(id) {
         {
             _content = value;
             HtmlElement.InnerHtml = value;
-            OnRendering(null);
+            HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
         }
-    }
-
-    protected override void OnRendering(EventArgs e)
-    {
-        HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
     }
 
     public virtual void Add(string content)

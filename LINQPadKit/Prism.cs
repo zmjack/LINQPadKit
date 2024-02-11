@@ -41,7 +41,8 @@ window.call_prism = function(language, code) {
         set
         {
             _content = value;
-            HtmlElement.InnerHtml = Util.InvokeScript(true, "call_prism", new[] { Language, value }) as string;
+            var html = Util.InvokeScript(true, "call_prism", new[] { Language, value }) as string;
+            HtmlElement.InnerHtml = html;
         }
     }
 
