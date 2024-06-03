@@ -277,7 +277,7 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
     {
         var bits = GetBits(obj);
 
-        var scale = bits[16..21];
+        var scale = bits[16..24];
         var sign = bits[31];
         var high = bits[32..64];
         var low = bits[64..96];
@@ -290,7 +290,7 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
             [
                 new TableCell(true, new Span("Scale"))
                 {
-                    ColSpan = 5,
+                    ColSpan = 8,
                 },
                 new TableCell(true, new Span("Reserved"))
                 {
@@ -299,7 +299,7 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
                 new TableCell(true, new Span("Sign")),
                 new TableCell(true, new Span("Reserved"))
                 {
-                    ColSpan = 10,
+                    ColSpan = 7,
                 },
                 new TableCell(true, new Span("High"))
                 {
@@ -318,13 +318,13 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
             new TableRow(
             [
                 ..
-                from n in RangeEx.Create(17, 5).Reverse()
+                from n in RangeEx.Create(16, 8).Reverse()
                 select new TableCell(true, new Span(n.ToString())),
                 ..
                 from n in RangeEx.Create(0, 16).Reverse()
                 select new TableCell(true, new Span(n.ToString())),
                 ..
-                from n in RangeEx.Create(21, 11).Reverse()
+                from n in RangeEx.Create(24, 8).Reverse()
                 select new TableCell(true, new Span(n.ToString())),
                 ..
                 from n in RangeEx.Create(32, 32).Reverse()
@@ -347,7 +347,7 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
                 select ParseCell(false, false),
                 ParseCell(false, sign),
                 ..
-                from n in RangeEx.Create(0, 10)
+                from n in RangeEx.Create(0, 7)
                 select ParseCell(false, false),
                 ..
                 from c in high.Reverse()
@@ -364,7 +364,7 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
             [
                 new TableCell(true, new Span(GetBitsValue(scale).ToString()))
                 {
-                    ColSpan = 5,
+                    ColSpan = 8,
                 },
                 new TableCell(true, new Span(""))
                 {
@@ -373,7 +373,7 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
                 new TableCell(true, new Span(sign ? "-" : "+")),
                 new TableCell(true, new Span(""))
                 {
-                    ColSpan = 10,
+                    ColSpan = 7,
                 },
                 new TableCell(true, new Span(GetBitsValue(value).ToString()))
                 {
