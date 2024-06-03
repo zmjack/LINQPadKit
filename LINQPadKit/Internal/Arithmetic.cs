@@ -305,14 +305,6 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
                 {
                     ColSpan = 32,
                 },
-                new TableCell(true, new Span("Mid"))
-                {
-                    ColSpan = 32,
-                },
-                new TableCell(true, new Span("Low"))
-                {
-                    ColSpan = 32,
-                },
             ]).Pipe(StyleHeader),
 
             new TableRow(
@@ -328,12 +320,6 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
                 select new TableCell(true, new Span(n.ToString())),
                 ..
                 from n in RangeEx.Create(32, 32).Reverse()
-                select new TableCell(true, new Span(n.ToString())),
-                ..
-                from n in RangeEx.Create(96, 32).Reverse()
-                select new TableCell(true, new Span(n.ToString())),
-                ..
-                from n in RangeEx.Create(64, 32).Reverse()
                 select new TableCell(true, new Span(n.ToString())),
             ]).Pipe(StyleIndex),
 
@@ -352,12 +338,6 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
                 ..
                 from c in high.Reverse()
                 select ParseCell(false, c),
-                ..
-                from c in mid.Reverse()
-                select ParseCell(false, c),
-                ..
-                from c in low.Reverse()
-                select ParseCell(false, c),
             ]).Pipe(Style),
 
             new TableRow(
@@ -375,9 +355,49 @@ internal partial class Arithmetic<T> : Table where T : unmanaged
                 {
                     ColSpan = 7,
                 },
+                new TableCell(true, new Span(""))
+                {
+                    ColSpan = 32,
+                },
+            ]).Pipe(StyleHeader),
+
+            new TableRow(
+            [
+                new TableCell(true, new Span("Mid"))
+                {
+                    ColSpan = 32,
+                },
+                new TableCell(true, new Span("Low"))
+                {
+                    ColSpan = 32,
+                },
+            ]).Pipe(StyleHeader),
+
+            new TableRow(
+            [
+                ..
+                from n in RangeEx.Create(96, 32).Reverse()
+                select new TableCell(true, new Span(n.ToString())),
+                ..
+                from n in RangeEx.Create(64, 32).Reverse()
+                select new TableCell(true, new Span(n.ToString())),
+            ]).Pipe(StyleIndex),
+
+            new TableRow(
+            [
+                ..
+                from c in mid.Reverse()
+                select ParseCell(false, c),
+                ..
+                from c in low.Reverse()
+                select ParseCell(false, c),
+            ]).Pipe(Style),
+
+            new TableRow(
+            [
                 new TableCell(true, new Span(GetBitsValue(value).ToString()))
                 {
-                    ColSpan = 96,
+                    ColSpan = 64,
                 },
             ]).Pipe(StyleHeader),
         ];
