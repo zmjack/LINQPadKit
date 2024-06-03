@@ -3,7 +3,7 @@ using NStandard;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-namespace LINQPadKit.Internal;
+namespace LINQPadKit;
 
 public partial class Arithmetic<T> : Table where T : unmanaged
 {
