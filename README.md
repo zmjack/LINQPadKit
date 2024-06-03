@@ -165,7 +165,5 @@ new Memory(true)
 }.Dump();
 ```
 
-![](https://github.com/zmjack/LINQPadKit/blob/master/docs/images/memory.png?raw=true)
-
-
+![memory.png (620×480) (raw.githubusercontent.com)](https://raw.githubusercontent.com/zmjack/LINQPadKit/main/doc/images/memory.png)
 
