@@ -44,28 +44,28 @@ public partial class TileMap : Div
         Children.Add(_canvas);
 
         _bridge = new Div();
-        _bridge.HtmlElement.AddEventListener("cell:mouseDown", new[]
-        {
+        _bridge.HtmlElement.AddEventListener("cell:mouseDown",
+        [
             "x: args.detail.x",
             "y: args.detail.y",
-        }, CellMouseDown);
-        _bridge.HtmlElement.AddEventListener("cell:colorChange", new[]
-        {
+        ], CellMouseDown);
+        _bridge.HtmlElement.AddEventListener("cell:colorChange",
+        [
             "x: args.detail.x",
             "y: args.detail.y",
             "color: args.detail.color",
-        }, ColorChange);
-        _bridge.HtmlElement.AddEventListener("cell:imageChange", new[]
-        {
+        ], ColorChange);
+        _bridge.HtmlElement.AddEventListener("cell:imageChange",
+        [
             "x: args.detail.x",
             "y: args.detail.y",
             "image: args.detail.image",
-        }, ImageChange);
-        _bridge.HtmlElement.AddEventListener("ready", new[]
-        {
+        ], ImageChange);
+        _bridge.HtmlElement.AddEventListener("ready",
+        [
             "rows: args.detail.rows",
             "cols: args.detail.cols",
-        }, Ready);
+        ], Ready);
         Children.Add(_bridge);
     }
 

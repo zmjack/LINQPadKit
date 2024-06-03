@@ -8,7 +8,7 @@ namespace LINQPadKit;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class DumpContainerExtensions
 {
-    private static readonly Dictionary<StructTuple<DumpContainer, IState>, StateHandler> _handlerMap = new();
+    private static readonly Dictionary<StructTuple<DumpContainer, IState>, StateHandler> _handlerMap = [];
 
     public static DumpContainer Bind(this DumpContainer @this, IState state)
     {

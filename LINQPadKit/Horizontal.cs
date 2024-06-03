@@ -6,15 +6,14 @@ namespace LINQPadKit;
 
 public partial class Horizontal : IEnumerable<object>, IDumpObject
 {
-    private readonly List<object> _children = new();
+    private readonly List<object> _children = [];
     private readonly bool _withGaps;
+    public object GetGraphObject() => Util.HorizontalRun(_withGaps, _children);
 
     public Horizontal(bool withGaps = true)
     {
         _withGaps = withGaps;
     }
-
-    public object GetGraphObject() => Util.HorizontalRun(_withGaps, _children);
 
     public void Add(object obj)
     {
@@ -25,6 +24,7 @@ public partial class Horizontal : IEnumerable<object>, IDumpObject
             _ => obj,
         });
     }
+
     public IEnumerator GetEnumerator()
     {
         return _children.GetEnumerator();

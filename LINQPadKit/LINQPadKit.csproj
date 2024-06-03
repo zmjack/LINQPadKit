@@ -11,7 +11,7 @@
     <Authors>zmjack</Authors>
     <Company>nstandard.net</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.2.5</Version>
+    <Version>0.3.0</Version>
     <Description>Extension Toolkit for LINQPad.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
@@ -23,9 +23,11 @@
     <PackageTags>LINQPad ToolKit Extension</PackageTags>
     <PackageIconUrl />
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Horizontal - Copy.IDump.cs" />
     <Compile Remove="Mermaid - Copy.Direction.cs" />
     <Compile Remove="Mermaid - Copy.TreeGraph.cs" />
   </ItemGroup>
@@ -54,13 +56,18 @@
 
   <ItemGroup>
     <PackageReference Include="LINQPad.Runtime" Version="7.7.15" />
-    <PackageReference Include="NStandard" Version="0.48.0.1" />
+    <PackageReference Include="NStandard" Version="0.65.1" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+    <None Include="Memory.IDump.cs">
+      <DependentUpon>Memory.IDump.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </None>
     <None Include="Horizontal.IDump.cs">
       <DesignTime>True</DesignTime>
@@ -72,6 +79,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Memory.IDump.tt">
+      <LastGenOutput>Memory.IDump.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="T4\IDump.t4">
       <Generator></Generator>
     </None>

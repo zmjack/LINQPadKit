@@ -8,7 +8,7 @@ namespace LINQPadKit;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class SpanExtensions
 {
-    private static readonly Dictionary<StructTuple<Span, IState>, StateHandler> _handlerMap = new();
+    private static readonly Dictionary<StructTuple<Span, IState>, StateHandler> _handlerMap = [];
 
     public static Span Bind(this Span @this, IState state)
     {

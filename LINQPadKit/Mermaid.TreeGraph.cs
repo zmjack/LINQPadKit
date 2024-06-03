@@ -10,7 +10,7 @@ public partial class Mermaid
         public class TreeNode : ITreeNode, IEnumerable<ITreeNode>
         {
             public string Text { get; }
-            private readonly List<ITreeNode> _children = new();
+            private readonly List<ITreeNode> _children = [];
             public IEnumerable<ITreeNode> Children => _children;
 
             public TreeNode()

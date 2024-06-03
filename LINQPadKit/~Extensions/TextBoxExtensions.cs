@@ -8,7 +8,7 @@ namespace LINQPadKit;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static class TextBoxExtensions
 {
-    private static readonly Dictionary<StructTuple<TextBox, IState>, StructTuple<EventHandler, StateHandler>> _handlerMap = new();
+    private static readonly Dictionary<StructTuple<TextBox, IState>, StructTuple<EventHandler, StateHandler>> _handlerMap = [];
 
     public static TextBox Bind(this TextBox @this, IState state)
     {

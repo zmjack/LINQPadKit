@@ -93,6 +93,8 @@ A --> B
 A --> C
 ```
 
+<br/>
+
 ### TreeGraph
 
 ```csharp
@@ -138,10 +140,10 @@ linkStyle 4 stroke-width:0px
 void Main()
 {
     KaTex.Import();
-	var a = new KaTex
-	{
-		"c = \\pm\\sqrt{a^2 + b^2}"
-	}.Dump();
+    var a = new KaTex
+    {
+        "c = \\pm\\sqrt{a^2 + b^2}"
+    }.Dump();
 }
 ```
 
@@ -149,7 +151,21 @@ $$
 c = \pm\sqrt{a^2 + b^2}
 $$
 
+<br/>
 
+### Memory
+
+```csharp
+new Memory(true)
+{
+    (int)7,
+    (int)-7,
+    (float)7,
+    (float)-7,
+}.Dump();
+```
+
+![](https://github.com/zmjack/LINQPadKit/blob/master/docs/images/memory.png?raw=true)
 
 
 

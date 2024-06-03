@@ -6,7 +6,7 @@ namespace LINQPadKit;
 
 public partial class Vertical : IEnumerable<object>, IDumpObject
 {
-    private readonly List<object> _children = new();
+    private readonly List<object> _children = [];
     public object GetGraphObject() => Util.VerticalRun(_children);
 
     public void Add(object obj)
