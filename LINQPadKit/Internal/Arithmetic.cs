@@ -5,10 +5,25 @@ using System.Runtime.InteropServices;
 
 namespace LINQPadKit.Internal;
 
-internal partial class Arithmetic<T> : Table where T : unmanaged
+public partial class Arithmetic<T> : Table where T : unmanaged
 {
     public bool Decoded { get; }
     public int ChunkSize { get; }
+
+    public Arithmetic(T obj, bool decoded) : base(
+        decoded
+            ? GetDecodedMemory(obj, 32)
+            : GetOriginMemory(obj, 32)
+        )
+    {
+        if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+        {
+            throw new NotSupportedException("Only Windows is supported.");
+        }
+
+        Decoded = decoded;
+        ChunkSize = 32;
+    }
 
     public Arithmetic(T obj, bool decoded, int chunk) : base(
         decoded
