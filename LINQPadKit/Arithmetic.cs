@@ -174,7 +174,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
                 [
                     ..
                     from n in GetIndices(0, bits.Length, true)
-                    select new TableCell(true, new Span(n.ToString()))
+                    select new TableCell(true, new Span($"{n}"))
                 ]).Pipe(StyleIndex),
 
                 new TableRow(
@@ -188,7 +188,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
                 new TableRow(
                 [
                     new TableCell(true, new Span(sign ? "-" : "+")),
-                    new TableCell(true, new Span(GetBitsValue(value).ToString()))
+                    new TableCell(true, new Span($"{GetBitsValue(value)}"))
                     {
                         ColSpan = bits.Length - 1,
                     },
@@ -211,7 +211,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
                 [
                     ..
                     from n in GetIndices(0, bits.Length, true)
-                    select new TableCell(true, new Span(n.ToString()))
+                    select new TableCell(true, new Span($"{n}"))
                 ]).Pipe(StyleIndex),
 
                 new TableRow(
@@ -223,7 +223,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
 
                 new TableRow(
                 [
-                    new TableCell(true, new Span(GetBitsValue(bits).ToString()))
+                    new TableCell(true, new Span($"{GetBitsValue(bits)}"))
                     {
                         ColSpan = bits.Length,
                     },
@@ -259,7 +259,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
             [
                 ..
                 from n in GetIndices(0, bits.Length, true)
-                select new TableCell(true, new Span(n.ToString()))
+                select new TableCell(true, new Span($"{n}"))
             ]).Pipe(StyleIndex),
 
             new TableRow(
@@ -276,11 +276,11 @@ public partial class Arithmetic<T> : Table where T : unmanaged
             new TableRow(
             [
                 new TableCell(true, new Span(sign ? "-" : "+")),
-                new TableCell(true, new Span(GetBitsValue(exponent).ToString()))
+                new TableCell(true, new Span($"{GetBitsValue(exponent)}"))
                 {
                     ColSpan = elength,
                 },
-                new TableCell(true, new Span(GetBitsValue(mantissa).ToString()))
+                new TableCell(true, new Span($"{GetBitsValue(mantissa)}"))
                 {
                     ColSpan = mlength,
                 },
@@ -316,26 +316,19 @@ public partial class Arithmetic<T> : Table where T : unmanaged
                 {
                     ColSpan = 7,
                 },
-                new TableCell(true, new Span("High"))
-                {
-                    ColSpan = 32,
-                },
             ]).Pipe(StyleHeader),
 
             new TableRow(
             [
                 ..
                 from n in RangeEx.Create(16, 8).Reverse()
-                select new TableCell(true, new Span(n.ToString())),
+                select new TableCell(true, new Span($"{n}")),
                 ..
                 from n in RangeEx.Create(0, 16).Reverse()
-                select new TableCell(true, new Span(n.ToString())),
+                select new TableCell(true, new Span($"{n}")),
                 ..
                 from n in RangeEx.Create(24, 8).Reverse()
-                select new TableCell(true, new Span(n.ToString())),
-                ..
-                from n in RangeEx.Create(32, 32).Reverse()
-                select new TableCell(true, new Span(n.ToString())),
+                select new TableCell(true, new Span($"{n}")),
             ]).Pipe(StyleIndex),
 
             new TableRow(
@@ -350,14 +343,11 @@ public partial class Arithmetic<T> : Table where T : unmanaged
                 ..
                 from n in RangeEx.Create(0, 7)
                 select ParseCell(false, false),
-                ..
-                from c in high.Reverse()
-                select ParseCell(false, c),
             ]).Pipe(Style),
 
             new TableRow(
             [
-                new TableCell(true, new Span(GetBitsValue(scale).ToString()))
+                new TableCell(true, new Span($"{GetBitsValue(scale)}"))
                 {
                     ColSpan = 8,
                 },
@@ -370,7 +360,12 @@ public partial class Arithmetic<T> : Table where T : unmanaged
                 {
                     ColSpan = 7,
                 },
-                new TableCell(true, new Span(""))
+            ]).Pipe(StyleHeader),
+
+            // High
+            new TableRow(
+            [
+                new TableCell(true, new Span("High"))
                 {
                     ColSpan = 32,
                 },
@@ -378,11 +373,30 @@ public partial class Arithmetic<T> : Table where T : unmanaged
 
             new TableRow(
             [
-                new TableCell(true, new Span("Mid"))
+                ..
+                from n in RangeEx.Create(32, 32).Reverse()
+                select new TableCell(true, new Span($"{n}")),
+            ]).Pipe(StyleIndex),
+
+            new TableRow(
+            [
+                ..
+                from c in high.Reverse()
+                select ParseCell(false, c),
+            ]).Pipe(Style),
+
+            new TableRow(
+            [
+                new TableCell(true, new Span($"{GetBitsValue(high)}"))
                 {
                     ColSpan = 32,
                 },
-                new TableCell(true, new Span("Low"))
+            ]).Pipe(StyleHeader),
+
+            // Mid
+            new TableRow(
+            [
+                new TableCell(true, new Span("Mid"))
                 {
                     ColSpan = 32,
                 },
@@ -392,10 +406,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
             [
                 ..
                 from n in RangeEx.Create(96, 32).Reverse()
-                select new TableCell(true, new Span(n.ToString())),
-                ..
-                from n in RangeEx.Create(64, 32).Reverse()
-                select new TableCell(true, new Span(n.ToString())),
+                select new TableCell(true, new Span($"{n}")),
             ]).Pipe(StyleIndex),
 
             new TableRow(
@@ -403,6 +414,34 @@ public partial class Arithmetic<T> : Table where T : unmanaged
                 ..
                 from c in mid.Reverse()
                 select ParseCell(false, c),
+            ]).Pipe(Style),
+
+            new TableRow(
+            [
+                new TableCell(true, new Span($"{GetBitsValue(mid)}"))
+                {
+                    ColSpan = 32,
+                },
+            ]).Pipe(StyleHeader),
+
+            // Low
+            new TableRow(
+            [
+                new TableCell(true, new Span("Low"))
+                {
+                    ColSpan = 32,
+                },
+            ]).Pipe(StyleHeader),
+
+            new TableRow(
+            [
+                ..
+                from n in RangeEx.Create(64, 32).Reverse()
+                select new TableCell(true, new Span($"{n}")),
+            ]).Pipe(StyleIndex),
+
+            new TableRow(
+            [
                 ..
                 from c in low.Reverse()
                 select ParseCell(false, c),
@@ -410,7 +449,16 @@ public partial class Arithmetic<T> : Table where T : unmanaged
 
             new TableRow(
             [
-                new TableCell(true, new Span(GetBitsValue(value).ToString()))
+                new TableCell(true, new Span($"{GetBitsValue(low)}"))
+                {
+                    ColSpan = 64,
+                },
+            ]).Pipe(StyleHeader),
+
+            // High & Mid & Low
+            new TableRow(
+            [
+                new TableCell(true, new Span($"Value = {GetBitsValue(value)}"))
                 {
                     ColSpan = 64,
                 },
@@ -437,7 +485,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
                     [
                         ..
                         from n in GetIndices(i * chunkSize, chunk.Length, false)
-                        select new TableCell(true, new Span(n.ToString()))
+                        select new TableCell(true, new Span($"{n}"))
                     ]).Pipe(StyleIndex),
 
                     new TableRow(
@@ -456,7 +504,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
             [
                 ..
                 from n in GetIndices(0, bits.Length, false)
-                select new TableCell(true, new Span(n.ToString()))
+                select new TableCell(true, new Span($"{n}"))
             ]).Pipe(StyleIndex),
 
             new TableRow(
