@@ -9,7 +9,8 @@ public partial class Mermaid : Pre, IEnumerable<string>
     {
         KitUtil.Load("package", "dist", $"mermaid@10.4.0.min.js");
 
-        Util.HtmlHead.AddScript("""
+        Util.HtmlHead.AddScript(
+"""
 mermaid.initialize({ startOnLoad: false });
 window.call_mermaid = function(id) {
     var el = document.getElementById(id);

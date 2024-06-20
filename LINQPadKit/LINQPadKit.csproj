@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>
-      netcoreapp3.1;net5.0;net6.0;net7.0
+      net5.0;net6.0;net7.0
     </TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -11,7 +11,7 @@
     <Authors>zmjack</Authors>
     <Company>nstandard.net</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.4.5</Version>
+    <Version>0.5.0</Version>
     <Description>Extension Toolkit for LINQPad.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
@@ -35,6 +35,7 @@
   <ItemGroup>
     <None Remove="src\fabric%405.3.1.min.js" />
     <None Remove="src\mermaid%4010.4.0.min.js" />
+    <None Remove="src\package\dist\echarts%405.5.0.min.js" />
     <None Remove="src\package\dist\katex%400.16.9.min.css" />
     <None Remove="src\package\dist\katex%400.16.9.min.js" />
     <None Remove="src\prism%401.29.0.min.css" />
@@ -44,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="src\package\dist\echarts@5.5.0.min.js" />
     <Content Include="src\package\dist\fabric%405.3.1.min.js" />
     <Content Include="src\package\dist\katex@0.16.9.min.css" />
     <Content Include="src\package\dist\katex@0.16.9.min.js" />

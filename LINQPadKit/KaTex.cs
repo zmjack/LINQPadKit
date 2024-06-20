@@ -13,7 +13,8 @@ public partial class KaTex : Pre, IEnumerable<string>
         KitUtil.Load("package", "dist", $"katex@0.16.9.min.css");
         KitUtil.Load("package", "dist", $"katex@0.16.9.min.js");
 
-        Util.HtmlHead.AddScript("""
+        Util.HtmlHead.AddScript(
+"""
 window.call_katex = function(id) {
     var el = document.getElementById(id);
     katex.render(el.textContent, el, {
