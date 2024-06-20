@@ -25,15 +25,18 @@ window.call_echarts = function(id, option) {
         );
     }
 
-    public ECharts() : this(null, 400)
+    public ECharts() : this("100%", "400px")
     {
     }
 
-    public ECharts(int? width, int? height)
+    public ECharts(int width, int height)
     {
-        var s_width = width.HasValue ? $"{width}px" : "100%";
-        var s_height = width.HasValue ? $"{height}px" : "100%";
-        HtmlElement.SetAttribute("style", $"width:{s_width};height:{s_height}");
+        HtmlElement.SetAttribute("style", $"width:{width}px;height:{height}px");
+    }
+
+    public ECharts(string width, string height)
+    {
+        HtmlElement.SetAttribute("style", $"width:{width};height:{height}");
     }
 
     private string _option;
