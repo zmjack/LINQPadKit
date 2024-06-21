@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>
-      net5.0;net6.0;net7.0
+      net6.0;net7.0;net8.0
     </TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -11,7 +11,7 @@
     <Authors>zmjack</Authors>
     <Company>nstandard.net</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.5.1</Version>
+    <Version>0.6.0</Version>
     <Description>Extension Toolkit for LINQPad.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
@@ -27,38 +27,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Horizontal - Copy.IDump.cs" />
-    <Compile Remove="Mermaid - Copy.Direction.cs" />
-    <Compile Remove="Mermaid - Copy.TreeGraph.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="src\fabric%405.3.1.min.js" />
-    <None Remove="src\mermaid%4010.4.0.min.js" />
-    <None Remove="src\package\dist\echarts%405.5.0.min.js" />
-    <None Remove="src\package\dist\katex%400.16.9.min.css" />
-    <None Remove="src\package\dist\katex%400.16.9.min.js" />
-    <None Remove="src\prism%401.29.0.min.css" />
-    <None Remove="src\prism%401.29.0.min.js" />
-    <None Remove="src\TileMap\dist\tile-map.css" />
-    <None Remove="src\TileMap\dist\tile-map.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="src\package\dist\echarts@5.5.0.min.js" />
-    <Content Include="src\package\dist\fabric%405.3.1.min.js" />
-    <Content Include="src\package\dist\katex@0.16.9.min.css" />
-    <Content Include="src\package\dist\katex@0.16.9.min.js" />
-    <Content Include="src\package\dist\mermaid%4010.4.0.min.js" />
-    <Content Include="src\package\dist\prism%401.29.0.min.css" />
-    <Content Include="src\package\dist\prism%401.29.0.min.js" />
-    <Content Include="src\TileMap\dist\tile-map.css" />
-    <Content Include="src\TileMap\dist\tile-map.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="LINQPad.Runtime" Version="7.7.15" />
-    <PackageReference Include="NStandard" Version="0.65.1" />
+    <PackageReference Include="NStandard" Version="0.67.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,17 +46,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Horizontal.IDump.tt</DependentUpon>
     </None>
-    <None Include="Mermaid.Direction.cs" />
-    <None Include="Mermaid.TreeGraph.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="!T4\IDump.t4">
+      <Generator></Generator>
+    </None>
     <None Update="Memory.IDump.tt">
       <LastGenOutput>Memory.IDump.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="T4\IDump.t4">
-      <Generator></Generator>
     </None>
     <None Update="Vertical.IDump.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -95,15 +63,6 @@
     <None Update="Horizontal.IDump.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Horizontal.IDump.cs</LastGenOutput>
-    </None>
-    <None Update="TextTemplate1.txt">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TextTemplate1.tt</DependentUpon>
-    </None>
-    <None Update="TreeGraph.Import.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TreeGraph.Import.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
@@ -117,15 +76,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Horizontal.IDump.tt</DependentUpon>
     </Compile>
-    <Compile Update="TreeGraph.Import.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TreeGraph.Import.tt</DependentUpon>
-    </Compile>
     <Compile Update="Vertical.IDump.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Vertical.IDump.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Memory.IDump.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Memory.IDump.tt</DependentUpon>
+    </Compile>
+    <Compile Update="TreeGraph.Import.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TreeGraph.Import.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

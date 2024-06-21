@@ -54,7 +54,7 @@ public static class TextBoxExtensions
             var (textInput, handler) = _handlerMap[key];
             @this.TextInput -= textInput;
             state.Changed -= handler.Changed;
-            state.Updating += handler.Updating;
+            state.Updating -= handler.Updating;
         }
 
         return @this;

@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace LINQPadKit;
 
-internal static class KitUtil
+public static class KitUtil
 {
     public static void Load(params string[] srcPath)
     {

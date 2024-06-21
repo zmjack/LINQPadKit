@@ -18,7 +18,7 @@ public static class DumpContainerExtensions
         {
             var received = new State.ValueReceivedHandler<object>(value =>
             {
-                @this.Refresh();
+                @this.Content = state.Value;
             });
 
             state.Changed += received;

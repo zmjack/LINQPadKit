@@ -1,31 +1,30 @@
 ﻿using LINQPad;
 using System.Collections;
 
-namespace LINQPadKit;
+namespace LINQPadKit.Remotes;
 
-public partial class Mermaid : Pre, IEnumerable<string>
+public partial class KaTex : Pre, IEnumerable<string>
 {
     public static void Import()
     {
-        KitUtil.Load("package", "dist", $"mermaid@10.4.0.min.js");
+        Util.HtmlHead.AddCssLink("https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css");
+        Util.HtmlHead.AddScriptFromUri("https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js");
 
         Util.HtmlHead.AddScript(
 """
-mermaid.initialize({ startOnLoad: false });
-window.call_mermaid = function(id) {
+window.call_katex = function(id) {
     var el = document.getElementById(id);
-    if (el.hasAttribute('data-processed')) {
-        el.removeAttribute('data-processed');
-    }
-    mermaid.run({ querySelector: '#' + id });
+    katex.render(el.textContent, el, {
+        throwOnError: false
+    });
 }
 """
         );
     }
 
-    public Mermaid()
+    public KaTex()
     {
-        CssClass = "mermaid";
+        CssClass = "katex";
     }
 
     private string _content;
@@ -36,7 +35,7 @@ window.call_mermaid = function(id) {
         {
             _content = value;
             HtmlElement.InnerHtml = value;
-            HtmlElement.InvokeScript(false, "call_mermaid", HtmlElement.ID);
+            HtmlElement.InvokeScript(false, "call_katex", HtmlElement.ID);
         }
     }
 

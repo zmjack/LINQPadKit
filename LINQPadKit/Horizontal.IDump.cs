@@ -1,4 +1,4 @@
-﻿using LINQPad;
+﻿﻿using LINQPad;
 using LINQPadKit.Design;
 
 namespace LINQPadKit;

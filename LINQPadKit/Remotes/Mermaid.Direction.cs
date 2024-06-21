@@ -1,4 +1,4 @@
-﻿namespace LINQPadKit;
+﻿namespace LINQPadKit.Remotes;
 
 public partial class Mermaid
 {

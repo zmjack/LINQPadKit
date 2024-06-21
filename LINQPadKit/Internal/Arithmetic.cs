@@ -3,9 +3,9 @@ using NStandard;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-namespace LINQPadKit;
+namespace LINQPadKit.Internal;
 
-public partial class Arithmetic<T> : Table where T : unmanaged
+internal class Arithmetic<T> : Table where T : unmanaged
 {
     public bool Decoded { get; }
     public int ChunkSize { get; }
@@ -125,7 +125,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
         var _bits = new BitArray(bits);
         var bytes = new byte[16];
         _bits.CopyTo(bytes, 0);
-        return BitConverterEx.ToUInt128(bytes, 0);
+        return bytes.ToUInt128(0);
     }
 #else
     private static decimal GetBitsValue(bool[] bits)
@@ -237,7 +237,7 @@ public partial class Arithmetic<T> : Table where T : unmanaged
         var bits = GetBits(obj);
 
         var sign = bits[bits.Length - 1];
-        var exponent = bits[(mlength)..(mlength + elength)];
+        var exponent = bits[mlength..(mlength + elength)];
         var mantissa = bits[..mlength];
 
         return

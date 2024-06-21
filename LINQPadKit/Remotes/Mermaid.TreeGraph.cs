@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Text;
 
-namespace LINQPadKit;
+namespace LINQPadKit.Remotes;
 
 public partial class Mermaid
 {

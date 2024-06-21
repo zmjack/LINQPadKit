@@ -42,7 +42,7 @@ public static class SpanExtensions
         if (_handlerMap.TryGetValue(key, out var handler))
         {
             state.Changed -= handler.Changed;
-            state.Updating += handler.Updating;
+            state.Updating -= handler.Updating;
         }
 
         return @this;

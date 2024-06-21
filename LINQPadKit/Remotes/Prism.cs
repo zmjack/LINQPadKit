@@ -1,15 +1,22 @@
 ﻿using LINQPad;
 using System.Collections;
+using Microsoft.OpenApi.Extensions;
 
-namespace LINQPadKit;
+namespace LINQPadKit.Remotes;
 
-public class Prism : Pre, IEnumerable<string>
+public partial class Prism : Pre, IEnumerable<string>
 {
-    public static void Import()
+    public static void Import(params Lang[] languages)
     {
-        // https://cdnjs.com/libraries/prism
-        KitUtil.Load("package", "dist", $"prism@1.29.0.min.css");
-        KitUtil.Load("package", "dist", $"prism@1.29.0.min.js");
+        if (!languages.Any()) throw new ArgumentException("The parameter can not be empty.", nameof(languages));
+
+        Util.HtmlHead.AddCssLink("https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css");
+        Util.HtmlHead.AddScriptFromUri("https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js");
+
+        foreach (var lang in languages)
+        {
+            Util.HtmlHead.AddScriptFromUri($"https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-{lang.GetDisplayName()}.min.js");
+        }
 
         Util.HtmlHead.AddStyles(
 """
@@ -28,9 +35,9 @@ window.call_prism = function(language, code) {
         );
     }
 
-    public string Language { get; }
+    public Lang Language { get; }
 
-    public Prism(string language)
+    public Prism(Lang language)
     {
         Language = language;
         CssClass = "prism";
@@ -43,7 +50,7 @@ window.call_prism = function(language, code) {
         set
         {
             _content = value;
-            var html = Util.InvokeScript(true, "call_prism", new[] { Language, value }) as string;
+            var html = Util.InvokeScript(true, "call_prism", new[] { Language.GetDisplayName(), value }) as string;
             HtmlElement.InnerHtml = html;
         }
     }

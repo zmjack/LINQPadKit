@@ -6,15 +6,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 
-namespace LINQPadKit;
+namespace LINQPadKit.Remotes;
 
 public partial class ECharts : Div, IEnumerable<string>
 {
     public static void Import()
     {
-        // https://www.jsdelivr.com/package/npm/echarts
-        KitUtil.Load("package", "dist", $"echarts@5.5.0.min.js");
-
+        Util.HtmlHead.AddScriptFromUri("https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js");
         Util.HtmlHead.AddScript(
 """
 window.call_echarts = function(id, option) {
@@ -58,7 +56,6 @@ window.call_echarts = function(id, option) {
     public virtual void Add(object chart)
     {
         Option = $"""
-option =
 {JsonSerializer.Serialize(chart, new JsonSerializerOptions(JsonSerializerDefaults.Web)
         {
             WriteIndented = true,
