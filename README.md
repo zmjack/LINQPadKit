@@ -54,8 +54,8 @@ new Horizontal
 ```csharp
 void Main()
 {
-    Prism.Import();    
-    new Prism("csharp")
+    Prism.Import(Prism.Lang.Csharp);
+    new Prism(Prism.Lang.Csharp)
     {
 """
 Console.WriteLine("Render code in LINQPad !");
