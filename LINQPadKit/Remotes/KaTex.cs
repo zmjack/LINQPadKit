@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace LINQPadKit.Remotes;
 
-public partial class KaTex : Pre, IEnumerable<string>
+public partial class KaTex : Pre, IEnumerable<string?>
 {
     public static void Import()
     {
@@ -27,8 +27,8 @@ window.call_katex = function(id) {
         CssClass = "katex";
     }
 
-    private string _content;
-    public string Content
+    private string? _content;
+    public string? Content
     {
         get => _content;
         set
@@ -39,7 +39,7 @@ window.call_katex = function(id) {
         }
     }
 
-    public virtual void Add(string content)
+    public virtual void Add(string? content)
     {
         Content = content;
     }
@@ -49,7 +49,7 @@ window.call_katex = function(id) {
         return new[] { _content }.GetEnumerator();
     }
 
-    IEnumerator<string> IEnumerable<string>.GetEnumerator()
+    IEnumerator<string?> IEnumerable<string?>.GetEnumerator()
     {
         return new[] { _content }.AsEnumerable().GetEnumerator();
     }

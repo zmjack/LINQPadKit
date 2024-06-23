@@ -1,4 +1,4 @@
-﻿﻿using LINQPad;
+﻿using LINQPad;
 using LINQPadKit.Design;
 
 namespace LINQPadKit;
@@ -11,13 +11,13 @@ public partial class Horizontal : IDump<Horizontal>
         return this;
     }
 
-    public Horizontal Dump(string description)
+    public Horizontal Dump(string? description)
     {
         GetGraphObject().Dump(description);
         return this;
     }
 
-    public Horizontal Dump(bool toDataGrid, string description = null)
+    public Horizontal Dump(bool toDataGrid, string? description = null)
     {
         GetGraphObject().Dump(toDataGrid, description);
         return this;
@@ -29,19 +29,19 @@ public partial class Horizontal : IDump<Horizontal>
         return this;
     }
 
-    public Horizontal Dump(string description = null, int? depth = null, int? collapseTo = null, bool toDataGrid = false, string exclude = null, string include = null, bool? alpha = null, bool noTotals = false, int? repeatHeadersAt = null, bool includePrivate = false)
+    public Horizontal Dump(string? description = null, int? depth = null, int? collapseTo = null, bool toDataGrid = false, string? exclude = null, string? include = null, bool? alpha = null, bool noTotals = false, int? repeatHeadersAt = null, bool includePrivate = false)
     {
         GetGraphObject().Dump(description, depth, collapseTo, toDataGrid, exclude, include, alpha, noTotals, repeatHeadersAt, includePrivate);
         return this;
     }
 
-    public Horizontal Dump(string description, int? depth, bool toDataGrid, string exclude = null, bool? alpha = null)
+    public Horizontal Dump(string? description, int? depth, bool toDataGrid, string? exclude = null, bool? alpha = null)
     {
         GetGraphObject().Dump(description, depth, toDataGrid, exclude, alpha);
         return this;
     }
 
-    public Horizontal Dump(string description, bool toDataGrid)
+    public Horizontal Dump(string? description, bool toDataGrid)
     {
         GetGraphObject().Dump(description, toDataGrid);
         return this;
@@ -53,13 +53,13 @@ public partial class Horizontal : IDump<Horizontal>
         return this;
     }
 
-    public Horizontal DumpTrace(string description)
+    public Horizontal DumpTrace(string? description)
     {
         GetGraphObject().DumpTrace(description);
         return this;
     }
 
-    public Horizontal DumpTrace(bool toDataGrid, string description = null)
+    public Horizontal DumpTrace(bool toDataGrid, string? description = null)
     {
         GetGraphObject().DumpTrace(toDataGrid, description);
         return this;
@@ -71,13 +71,13 @@ public partial class Horizontal : IDump<Horizontal>
         return this;
     }
 
-    public Horizontal DumpTrace(string description = null, int? depth = null, int? collapseTo = null, bool toDataGrid = false, string exclude = null, string include = null, bool? alpha = null, bool noTotals = false, int? repeatHeadersAt = null, bool includePrivate = false)
+    public Horizontal DumpTrace(string? description = null, int? depth = null, int? collapseTo = null, bool toDataGrid = false, string? exclude = null, string? include = null, bool? alpha = null, bool noTotals = false, int? repeatHeadersAt = null, bool includePrivate = false)
     {
         GetGraphObject().DumpTrace(description, depth, collapseTo, toDataGrid, exclude, include, alpha, noTotals, repeatHeadersAt, includePrivate);
         return this;
     }
 
-    public Horizontal DumpTrace(string description, bool toDataGrid)
+    public Horizontal DumpTrace(string? description, bool toDataGrid)
     {
         GetGraphObject().DumpTrace(description, toDataGrid);
         return this;

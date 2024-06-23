@@ -11,7 +11,7 @@ public static class KitUtil
         if (file.EndsWith(".js"))
         {
             var path = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
                 Path.Combine("..", "..", "content", "src"),
                 Path.Combine(srcPath)
             );
@@ -20,7 +20,7 @@ public static class KitUtil
         else if (file.EndsWith(".css"))
         {
             var path = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
                 Path.Combine("..", "..", "content", "src"),
                 Path.Combine(srcPath)
             );

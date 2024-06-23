@@ -9,7 +9,7 @@ public partial class Mermaid
     {
         public class TreeNode : ITreeNode, IEnumerable<ITreeNode>
         {
-            public string Text { get; }
+            public string? Text { get; }
             private readonly List<ITreeNode> _children = [];
             public IEnumerable<ITreeNode> Children => _children;
 
@@ -45,7 +45,7 @@ public partial class Mermaid
 
         public interface ITreeNode
         {
-            string Text { get; }
+            string? Text { get; }
             IEnumerable<ITreeNode> Children { get; }
         }
 
@@ -60,7 +60,7 @@ public partial class Mermaid
             _direction = direction;
         }
 
-        public override void Add(string content)
+        public override void Add(string? content)
         {
             throw new NotSupportedException();
         }

@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace LINQPadKit.Remotes;
 
-public partial class Mermaid : Pre, IEnumerable<string>
+public partial class Mermaid : Pre, IEnumerable<string?>
 {
     public static void Import()
     {
@@ -28,8 +28,8 @@ window.call_mermaid = function(id) {
         CssClass = "mermaid";
     }
 
-    private string _content;
-    public string Content
+    private string? _content;
+    public string? Content
     {
         get => _content;
         set
@@ -40,7 +40,7 @@ window.call_mermaid = function(id) {
         }
     }
 
-    public virtual void Add(string content)
+    public virtual void Add(string? content)
     {
         Content = content;
     }
@@ -50,7 +50,7 @@ window.call_mermaid = function(id) {
         return new[] { _content }.GetEnumerator();
     }
 
-    IEnumerator<string> IEnumerable<string>.GetEnumerator()
+    IEnumerator<string?> IEnumerable<string?>.GetEnumerator()
     {
         return new[] { _content }.AsEnumerable().GetEnumerator();
     }

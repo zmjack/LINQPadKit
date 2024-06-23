@@ -19,13 +19,13 @@ public partial class <#=ClassName#> : IDump<<#=ClassName#>>
         return this;
     }
 
-    public <#=ClassName#> Dump(string description)
+    public <#=ClassName#> Dump(string? description)
     {
         GetGraphObject().Dump(description);
         return this;
     }
 
-    public <#=ClassName#> Dump(bool toDataGrid, string description = null)
+    public <#=ClassName#> Dump(bool toDataGrid, string? description = null)
     {
         GetGraphObject().Dump(toDataGrid, description);
         return this;
@@ -37,19 +37,19 @@ public partial class <#=ClassName#> : IDump<<#=ClassName#>>
         return this;
     }
 
-    public <#=ClassName#> Dump(string description = null, int? depth = null, int? collapseTo = null, bool toDataGrid = false, string exclude = null, string include = null, bool? alpha = null, bool noTotals = false, int? repeatHeadersAt = null, bool includePrivate = false)
+    public <#=ClassName#> Dump(string? description = null, int? depth = null, int? collapseTo = null, bool toDataGrid = false, string? exclude = null, string? include = null, bool? alpha = null, bool noTotals = false, int? repeatHeadersAt = null, bool includePrivate = false)
     {
         GetGraphObject().Dump(description, depth, collapseTo, toDataGrid, exclude, include, alpha, noTotals, repeatHeadersAt, includePrivate);
         return this;
     }
 
-    public <#=ClassName#> Dump(string description, int? depth, bool toDataGrid, string exclude = null, bool? alpha = null)
+    public <#=ClassName#> Dump(string? description, int? depth, bool toDataGrid, string? exclude = null, bool? alpha = null)
     {
         GetGraphObject().Dump(description, depth, toDataGrid, exclude, alpha);
         return this;
     }
 
-    public <#=ClassName#> Dump(string description, bool toDataGrid)
+    public <#=ClassName#> Dump(string? description, bool toDataGrid)
     {
         GetGraphObject().Dump(description, toDataGrid);
         return this;
@@ -61,13 +61,13 @@ public partial class <#=ClassName#> : IDump<<#=ClassName#>>
         return this;
     }
 
-    public <#=ClassName#> DumpTrace(string description)
+    public <#=ClassName#> DumpTrace(string? description)
     {
         GetGraphObject().DumpTrace(description);
         return this;
     }
 
-    public <#=ClassName#> DumpTrace(bool toDataGrid, string description = null)
+    public <#=ClassName#> DumpTrace(bool toDataGrid, string? description = null)
     {
         GetGraphObject().DumpTrace(toDataGrid, description);
         return this;
@@ -79,13 +79,13 @@ public partial class <#=ClassName#> : IDump<<#=ClassName#>>
         return this;
     }
 
-    public <#=ClassName#> DumpTrace(string description = null, int? depth = null, int? collapseTo = null, bool toDataGrid = false, string exclude = null, string include = null, bool? alpha = null, bool noTotals = false, int? repeatHeadersAt = null, bool includePrivate = false)
+    public <#=ClassName#> DumpTrace(string? description = null, int? depth = null, int? collapseTo = null, bool toDataGrid = false, string? exclude = null, string? include = null, bool? alpha = null, bool noTotals = false, int? repeatHeadersAt = null, bool includePrivate = false)
     {
         GetGraphObject().DumpTrace(description, depth, collapseTo, toDataGrid, exclude, include, alpha, noTotals, repeatHeadersAt, includePrivate);
         return this;
     }
 
-    public <#=ClassName#> DumpTrace(string description, bool toDataGrid)
+    public <#=ClassName#> DumpTrace(string? description, bool toDataGrid)
     {
         GetGraphObject().DumpTrace(description, toDataGrid);
         return this;

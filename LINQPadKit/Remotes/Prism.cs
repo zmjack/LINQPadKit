@@ -1,10 +1,10 @@
 ﻿using LINQPad;
-using System.Collections;
 using Microsoft.OpenApi.Extensions;
+using System.Collections;
 
 namespace LINQPadKit.Remotes;
 
-public partial class Prism : Pre, IEnumerable<string>
+public partial class Prism : Pre, IEnumerable<string?>
 {
     public static void Import(params Lang[] languages)
     {
@@ -43,8 +43,8 @@ window.call_prism = function(language, code) {
         CssClass = "prism";
     }
 
-    private string _content;
-    public string Content
+    private string? _content;
+    public string? Content
     {
         get => _content;
         set
@@ -55,7 +55,7 @@ window.call_prism = function(language, code) {
         }
     }
 
-    public virtual void Add(string content)
+    public virtual void Add(string? content)
     {
         Content = content;
     }
@@ -65,7 +65,7 @@ window.call_prism = function(language, code) {
         return new[] { _content }.GetEnumerator();
     }
 
-    IEnumerator<string> IEnumerable<string>.GetEnumerator()
+    IEnumerator<string?> IEnumerable<string?>.GetEnumerator()
     {
         return new[] { _content }.AsEnumerable().GetEnumerator();
     }

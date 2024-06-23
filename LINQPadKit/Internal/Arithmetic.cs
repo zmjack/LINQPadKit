@@ -1,5 +1,4 @@
 ﻿using LINQPad.Controls;
-using NStandard;
 using System.Collections;
 using System.Runtime.InteropServices;
 

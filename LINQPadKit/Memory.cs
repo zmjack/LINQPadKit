@@ -2,7 +2,6 @@
 using LINQPad.Controls;
 using LINQPadKit.Design;
 using LINQPadKit.Internal;
-using NStandard;
 using System.Collections;
 
 namespace LINQPadKit;

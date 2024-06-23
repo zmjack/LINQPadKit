@@ -16,7 +16,7 @@ namespace Microsoft.OpenApi.Extensions
         /// <returns>
         /// The attribute of the specified type or null.
         /// </returns>
-        public static T GetAttributeOfType<T>(this Enum enumValue) where T : Attribute
+        public static T? GetAttributeOfType<T>(this Enum enumValue) where T : Attribute
         {
             var type = enumValue.GetType();
             var memInfo = type.GetMember(enumValue.ToString()).First();
@@ -32,7 +32,7 @@ namespace Microsoft.OpenApi.Extensions
         /// Use <see cref="DisplayAttribute"/> if exists.
         /// Otherwise, use the standard string representation.
         /// </returns>
-        public static string GetDisplayName(this Enum enumValue)
+        public static string? GetDisplayName(this Enum enumValue)
         {
             var attribute = enumValue.GetAttributeOfType<DisplayAttribute>();
             return attribute == null ? enumValue.ToString() : attribute.Name;

@@ -1,6 +1,5 @@
 ﻿using LINQPad.Controls;
 using LINQPadKit.Internal;
-using NStandard;
 using System.ComponentModel;
 
 namespace LINQPadKit;

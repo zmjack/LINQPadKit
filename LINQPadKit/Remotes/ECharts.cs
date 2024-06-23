@@ -8,7 +8,7 @@ using System.Text.Unicode;
 
 namespace LINQPadKit.Remotes;
 
-public partial class ECharts : Div, IEnumerable<string>
+public partial class ECharts : Div, IEnumerable<string?>
 {
     public static void Import()
     {
@@ -17,7 +17,7 @@ public partial class ECharts : Div, IEnumerable<string>
 """
 window.call_echarts = function(id, option) {
     var chart = echarts.init(document.getElementById(id));
-    chart.setOption(eval(option));
+    chart.setOption(JSON.parse(option.replace(/\n/g,'\\n').replace(/\r/g,'\\r')));
 }
 """
         );
@@ -37,8 +37,8 @@ window.call_echarts = function(id, option) {
         HtmlElement.SetAttribute("style", $"width:{width};height:{height}");
     }
 
-    private string _option;
-    public string Option
+    private string? _option;
+    public string? Option
     {
         get => _option;
         set
@@ -48,21 +48,24 @@ window.call_echarts = function(id, option) {
         }
     }
 
-    public virtual void Add(string option)
+    public virtual void Add(string? option)
     {
         Option = option;
     }
 
-    public virtual void Add(object chart)
+    public virtual void Add(object? chart)
     {
-        Option = $"""
-{JsonSerializer.Serialize(chart, new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        if (chart is null) Option = null;
+        else
         {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
-        })}
+            Option = $"""
+{JsonSerializer.Serialize(chart, new JsonSerializerOptions(JsonSerializerDefaults.Web)
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+            })}
 """;
+        }
     }
 
     public IEnumerator GetEnumerator()
@@ -70,7 +73,7 @@ window.call_echarts = function(id, option) {
         return new[] { _option }.GetEnumerator();
     }
 
-    IEnumerator<string> IEnumerable<string>.GetEnumerator()
+    IEnumerator<string?> IEnumerable<string?>.GetEnumerator()
     {
         return new[] { _option }.AsEnumerable().GetEnumerator();
     }

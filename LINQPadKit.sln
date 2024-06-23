@@ -7,11 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LINQPadKit", "LINQPadKit\LI
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B3CBAB5-2936-43CC-90CA-1C938A87C792}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		push.cmd = push.cmd
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LINQPadKit.Dev", "LINQPadKit.Dev\LINQPadKit.Dev.csproj", "{E2F1E913-7698-4B0D-993C-3523C827137C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LINQPadKit.Dev", "LINQPadKit.Dev\LINQPadKit.Dev.csproj", "{E2F1E913-7698-4B0D-993C-3523C827137C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
