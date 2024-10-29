@@ -6,13 +6,15 @@ namespace LINQPadKit.Internal;
 
 internal class Arithmetic<T> : Table where T : unmanaged
 {
+    private const int DEFAULT_CHUNK_SIZE = 32;
+
     public bool Decoded { get; }
     public int ChunkSize { get; }
 
     public Arithmetic(T obj, bool decoded) : base(
         decoded
-            ? GetDecodedMemory(obj, 32)
-            : GetOriginMemory(obj, 32)
+            ? GetDecodedMemory(obj, DEFAULT_CHUNK_SIZE)
+            : GetOriginMemory(obj, DEFAULT_CHUNK_SIZE)
         )
     {
         if (Environment.OSVersion.Platform != PlatformID.Win32NT)
@@ -21,7 +23,7 @@ internal class Arithmetic<T> : Table where T : unmanaged
         }
 
         Decoded = decoded;
-        ChunkSize = 32;
+        ChunkSize = DEFAULT_CHUNK_SIZE;
     }
 
     public Arithmetic(T obj, bool decoded, int chunk) : base(
@@ -113,6 +115,8 @@ internal class Arithmetic<T> : Table where T : unmanaged
 
         if (obj is float) return DecodeFloating(obj, 8, 23);
         if (obj is double) return DecodeFloating(obj, 11, 52);
+        if (obj is Half) return DecodeFloating(obj, 5, 10);
+
         if (obj is decimal) return DecodeDecimal(obj);
 
         return GetOriginMemory(obj, chunk);
