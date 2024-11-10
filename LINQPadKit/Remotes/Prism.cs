@@ -4,6 +4,7 @@ using System.Collections;
 
 namespace LINQPadKit.Remotes;
 
+[Obsolete("Use CodeSnippet instead.")]
 public partial class Prism : Pre, IEnumerable<string?>
 {
     public static void Import(params Lang[] languages)
