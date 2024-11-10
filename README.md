@@ -49,13 +49,12 @@ new Horizontal
 
 <br/>
 
-## Prism
+## CodeSnippet
 
 ```csharp
 void Main()
-{
-    Prism.Import(Prism.Lang.Csharp);
-    new Prism(Prism.Lang.Csharp)
+{    
+    new CodeSnippet(SyntaxLanguageStyle.CSharp)
     {
 """
 Console.WriteLine("Render code in LINQPad !");
