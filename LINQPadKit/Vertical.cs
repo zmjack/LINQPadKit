@@ -18,6 +18,13 @@ public partial class Vertical : IEnumerable<object>, IDumpObject
             _ => obj,
         });
     }
+    public void Add(IEnumerable<object> objs)
+    {
+        foreach (var obj in objs)
+        {
+            Add(obj);
+        }
+    }
 
     public IEnumerator GetEnumerator()
     {
