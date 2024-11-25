@@ -3,7 +3,7 @@ using LINQPad.Controls;
 using System.Collections;
 using System.Text;
 
-namespace LINQPadKit.Remotes;
+namespace LINQPadKit;
 
 public partial class CodeSnippet : Div, IEnumerable<string?>
 {
