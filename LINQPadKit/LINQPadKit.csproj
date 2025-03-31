@@ -1,96 +1,96 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>
-      net6.0;net7.0;net8.0
-    </TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+	<PropertyGroup>
+		<TargetFrameworks>
+			net6.0;net7.0;net8.0
+		</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
-    <RootNamespace>LINQPadKit</RootNamespace>
-    <Authors>zmjack</Authors>
-    <Company>nstandard.net</Company>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.8.5</Version>
-    <Description>Extension Toolkit for LINQPad.</Description>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
-    <PackageProjectUrl>nstandard.net</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <Copyright>Copyright © nstandard.net 2023</Copyright>
-    <LangVersion>preview</LangVersion>
-    <PackageId>LINQPadKit</PackageId>
-    <PackageTags>LINQPad ToolKit Extension</PackageTags>
-    <PackageIconUrl />
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+		<RootNamespace>LINQPadKit</RootNamespace>
+		<Authors>zmjack</Authors>
+		<Company>nstandard.net</Company>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>0.9.0</Version>
+		<Description>Extension Toolkit for LINQPad.</Description>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<RepositoryUrl>https://github.com/zmjack/LINQPadKit</RepositoryUrl>
+		<PackageProjectUrl>nstandard.net</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<Copyright>Copyright © nstandard.net 2023</Copyright>
+		<LangVersion>preview</LangVersion>
+		<PackageId>LINQPadKit</PackageId>
+		<PackageTags>LINQPad ToolKit Extension</PackageTags>
+		<PackageIconUrl />
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="LINQPad.Runtime" Version="7.7.15" />
-    <PackageReference Include="NStandard" Version="0.70.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="LINQPad.Runtime" Version="8.3.7" />
+		<PackageReference Include="NStandard" Version="0.90.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="Memory.IDump.cs">
-      <DependentUpon>Memory.IDump.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </None>
-    <None Include="Horizontal.IDump.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Horizontal.IDump.tt</DependentUpon>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="Memory.IDump.cs">
+			<DependentUpon>Memory.IDump.tt</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</None>
+		<None Include="Horizontal.IDump.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Horizontal.IDump.tt</DependentUpon>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="!T4\IDump.t4">
-      <Generator></Generator>
-    </None>
-    <None Update="Memory.IDump.tt">
-      <LastGenOutput>Memory.IDump.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="Vertical.IDump.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Vertical.IDump.cs</LastGenOutput>
-    </None>
-    <None Update="Horizontal.IDump.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Horizontal.IDump.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="!T4\IDump.t4">
+			<Generator></Generator>
+		</None>
+		<None Update="Memory.IDump.tt">
+			<LastGenOutput>Memory.IDump.cs</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Vertical.IDump.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>Vertical.IDump.cs</LastGenOutput>
+		</None>
+		<None Update="Horizontal.IDump.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>Horizontal.IDump.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Horizontal.IDump.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Horizontal.IDump.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Vertical.IDump.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Vertical.IDump.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Memory.IDump.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Memory.IDump.tt</DependentUpon>
-    </Compile>
-    <Compile Update="TreeGraph.Import.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TreeGraph.Import.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Horizontal.IDump.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Horizontal.IDump.tt</DependentUpon>
+		</Compile>
+		<Compile Update="Vertical.IDump.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Vertical.IDump.tt</DependentUpon>
+		</Compile>
+		<Compile Update="Memory.IDump.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Memory.IDump.tt</DependentUpon>
+		</Compile>
+		<Compile Update="TreeGraph.Import.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>TreeGraph.Import.tt</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
 </Project>

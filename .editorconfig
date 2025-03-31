@@ -1,4 +1,7 @@
-﻿[*.cs]
+﻿[*.{csproj,xml}]
+indent_size = 2
+
+[*.cs]
 
 # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS1591.severity = silent

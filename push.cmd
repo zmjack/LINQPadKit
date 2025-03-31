@@ -1,1 +1,1 @@
-nuget push "LINQPadKit/bin/Release/LINQPadKit.0.8.5.nupkg" -source nuget.org
+nuget push "LINQPadKit/bin/Release/LINQPadKit.0.9.0.nupkg" -source nuget.org
